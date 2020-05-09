@@ -6,9 +6,6 @@ public class Blockchain {
     //Block chain is tree not just a list
     public List<Blockchain> chain = new LinkedList<>();
 
-    public Blockchain () {
-        //TODO create gensis block
-    }
     public boolean addBlock () {
         return false;
     }

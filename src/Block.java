@@ -65,8 +65,12 @@ public class Block {
         //TODO calculate merkle tree root
     }
 
-    public void calculateBlockHash() {
+    public String calculateBlockHash() {
         //TODO calculate hash using sha256
+    }
+
+    public void setHash (String hash) {
+        this.hash = hash;
     }
 
     public int getBlockSize() {

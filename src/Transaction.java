@@ -1,3 +1,9 @@
+import com.google.gson.Gson;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.management.GarbageCollectorMXBean;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,15 +90,28 @@ public class Transaction {
         return false;
     }
 
-    public boolean verifyInputOutputSum () {
-        return false;
-    }
-
     public String hash() {
         return hash;
     }
 
-    public void calculateHash() {
+    public String calculateHash() {
+        Gson parser = new Gson();
+        String toBeHashed = Integer.toString(inputCounter) + Integer.toString(outputCounter)
+                + id + parser.toJson(input) + parser.toJson(output);
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(toBeHashed.getBytes("UTF-8"));
+            StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
+
     }
 
     public TransactionOutput getTransactionOutput (String outputIndex) {
