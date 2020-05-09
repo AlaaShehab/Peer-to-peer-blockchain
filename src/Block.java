@@ -1,3 +1,7 @@
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Block {
@@ -61,8 +65,36 @@ public class Block {
         return merkleTreeRoot;
     }
 
-    public void calculateMerkleTreeRoot() {
-        //TODO calculate merkle tree root
+    public void setMerkleTreeRoot(String merkleTreeRoot) {
+        this.merkleTreeRoot = merkleTreeRoot;
+    }
+    //TODO Alaa test merkle tree root
+    public String calculateMerkleTreeRoot() {
+        ArrayList<String> tree = new ArrayList<>();
+        for (Transaction t : transactions) {
+            tree.add(t.hash());
+        }
+
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
+
+        while (tree.size() > 1) {
+            int size = tree.size();
+            for (int i = 0; i < size; i += 2) {
+                String node = tree.remove(i);
+                node += i + 1 == size ? node : tree.remove(i+1);
+                try {
+                    tree.add(Utils.toHexString(digest.digest(node.getBytes("UTF-8"))));
+                } catch (UnsupportedEncodingException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+        return tree.get(0);
     }
 
     public String calculateBlockHash() {
