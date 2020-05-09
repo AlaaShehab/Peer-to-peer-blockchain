@@ -112,4 +112,31 @@ public class Block {
     public void setBlockSize(int blockSize) {
         this.blockSize = blockSize;
     }
+
+    public boolean containsTransaction (String transactionID) {
+        for (Transaction transaction : transactions) {
+            if (transaction.getId().equals(transactionID)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeTransaction (String transactionID) {
+        for (Transaction transaction : transactions) {
+            if (transaction.getId().equals(transactionID)) {
+                transactions.remove(transaction);
+                return;
+            }
+        }
+    }
+
+    public Transaction getTransaction (String transactionID) {
+        for (Transaction transaction : transactions) {
+            if (transaction.getId().equals(transactionID)) {
+                return transaction;
+            }
+        }
+        return null;
+    }
 }

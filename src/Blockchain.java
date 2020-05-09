@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Blockchain {
 
-    private Block block;
+    Block block;
     //Block chain is tree not just a list
     private List<Blockchain> chain = new LinkedList<>();
 
@@ -23,6 +23,18 @@ public class Blockchain {
             }
         }
         return false;
+    }
+    //TODO Alaa test getTransactionBlock
+    public Blockchain getTransactionBlock (String transactionID) {
+        if (block.containsTransaction(transactionID)) {
+            return this;
+        }
+        for (Blockchain child : chain) {
+            if (child.getTransactionBlock(transactionID) != null) {
+                return child;
+            }
+        }
+        return null;
     }
 
     public Blockchain getChainHead () {

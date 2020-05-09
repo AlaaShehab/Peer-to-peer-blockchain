@@ -50,19 +50,16 @@ public class Transaction {
         outputCounter++;
     }
 
-    public List<TransactionInput> getInput() {
-        return input;
-    }
-
     public void setInput(List<TransactionInput> input) {
         this.input = input;
     }
 
     public void addInput(TransactionInput input) {
         this.input.add(input);
+        inputCounter++;
     }
 
-    public List<TransactionOutput> getOutput() {
+    public List<TransactionOutput> getAllTransactionOutput() {
         return output;
     }
 
@@ -72,6 +69,7 @@ public class Transaction {
 
     public void addOutput (TransactionOutput output) {
         this.output.add(output);
+        outputCounter++;
     }
 
     public List<Witness> getWitnesses() {
