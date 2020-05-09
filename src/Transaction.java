@@ -9,6 +9,7 @@ public class Transaction {
     private List<TransactionOutput> output;
     private List<Witness> witnesses;
     private String hash;
+    private String id;
 
     public boolean isHasWitness() {
         return hasWitness;
@@ -91,5 +92,21 @@ public class Transaction {
     }
 
     public void calculateHash() {
+    }
+
+    public TransactionOutput getTransactionOutput (int outputIndex) {
+
+    }
+
+    public TransactionInput getTransactionInput (int inputIndex) {
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

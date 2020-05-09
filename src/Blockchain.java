@@ -13,4 +13,6 @@ public class Blockchain {
         return false;
     }
 
+    public Blockchain getChainHead () {}
+
 }

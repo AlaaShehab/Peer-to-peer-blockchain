@@ -19,7 +19,8 @@ public class Block {
         return false;
     }
 
-    public void solve() {
+    //Hardness is the number of zeros in the beginning of the hash
+    public void solve(int hardness) {
         //TODO do the mining for the block
     }
 
