@@ -1,6 +1,6 @@
 public class TransactionOutput {
     private float value;
-    private int index;
+    private String index;
     private String payeePublicKey;
 
     public float getValue() {
@@ -11,11 +11,11 @@ public class TransactionOutput {
         this.value = value;
     }
 
-    public int getIndex() {
+    public String getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 

@@ -1,6 +1,6 @@
 public class TransactionInput {
     private String previousTransaction;
-    private int outputIndex;
+    private String outputIndex;
     private String signature;
 
     public String getPreviousTransaction() {
@@ -11,11 +11,11 @@ public class TransactionInput {
         this.previousTransaction = previousTransaction;
     }
 
-    public int getOutputIndex() {
+    public String getOutputIndex() {
         return outputIndex;
     }
 
-    public void setOutputIndex(int outputIndex) {
+    public void setOutputIndex(String outputIndex) {
         this.outputIndex = outputIndex;
     }
 

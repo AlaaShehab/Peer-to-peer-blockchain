@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class Transaction {
@@ -94,12 +95,26 @@ public class Transaction {
     public void calculateHash() {
     }
 
-    public TransactionOutput getTransactionOutput (int outputIndex) {
-
+    public TransactionOutput getTransactionOutput (String outputIndex) {
+        for (TransactionOutput transactionOutput : output) {
+            if (transactionOutput.getIndex().equals(outputIndex)) {
+                return transactionOutput;
+            }
+        }
+        return null;
     }
 
-    public TransactionInput getTransactionInput (int inputIndex) {
+    public List<TransactionInput> getAllTransactionInput () {
+        return input;
+    }
 
+    public List<String> getAllTransactionInputIndices () {
+        List<String> indices = new ArrayList<>();
+
+        for (TransactionInput input : input) {
+            indices.add(input.getPreviousTransaction());
+        }
+        return indices;
     }
 
     public String getId() {
