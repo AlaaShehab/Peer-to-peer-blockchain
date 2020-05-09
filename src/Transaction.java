@@ -17,6 +17,7 @@ public class Transaction {
     private List<Witness> witnesses;
     private String hash;
     private String id;
+    private String payerPublicKey;
 
     public boolean isHasWitness() {
         return hasWitness;
@@ -95,7 +96,7 @@ public class Transaction {
     public String calculateHash() {
         Gson parser = new Gson();
         String toBeHashed = Integer.toString(inputCounter) + Integer.toString(outputCounter)
-                + id + parser.toJson(input) + parser.toJson(output);
+                + id + parser.toJson(input) + parser.toJson(output) + payerPublicKey;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(toBeHashed.getBytes("UTF-8"));
@@ -134,5 +135,13 @@ public class Transaction {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getPayerPublicKey() {
+        return payerPublicKey;
+    }
+
+    public void setPayerPublicKey(String payerPublicKey) {
+        this.payerPublicKey = payerPublicKey;
     }
 }
