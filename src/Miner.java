@@ -1,14 +1,16 @@
 import javafx.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
 
-public class Miner implements IMiner {
+public class Miner extends PeerNode implements IMiner {
     private Set<Pair<String, String>> spendings;
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
 
-    public Miner() {
+    public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
+    	super(port, hostName,ID);
         spendings = new HashSet<>();
         chain = new Blockchain(GensisBlock.getGensisBlock());
     }
