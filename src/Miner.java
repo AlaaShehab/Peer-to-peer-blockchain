@@ -46,14 +46,14 @@ public class Miner extends PeerNode implements IMiner {
     // Listen on ports for when a transactions sent by Clients.
     // Calls verifyTransaction first then if true adds new transaction
     @Override
-    public void receiveTransaction(Transaction transaction) {
-
-    }
-
-    // If needed to register a IMiner.
-    @Override
-    public void addMiner() {
-
+    public void receiveTransaction() {
+        //TODO receive string tx
+        Transaction transaction = buildTransaction("tx");
+        boolean validTransaction = verifyTransaction(transaction);
+        //TODO If not valid do something else
+        if (validTransaction) {
+            incomingTransactions.add(transaction);
+        }
     }
 
     @Override
@@ -158,7 +158,7 @@ public class Miner extends PeerNode implements IMiner {
         }
     }
 
-    private Transaction formTransaction(String t) {
+    private Transaction buildTransaction(String t) {
         String[] pairs = t.toString().split(",");
         Dictionary trans = new Hashtable();
         for (int i = 0; i < pairs.length; i++) {

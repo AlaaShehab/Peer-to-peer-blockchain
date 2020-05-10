@@ -14,8 +14,12 @@ public class Client extends PeerNode implements IClient {
     }
     
     @Override
-    public void readTransaction() {
-
+    public void readTransaction(String filename) {
+        //TODO read file
+        //TODO for loop for all transactions then parse each
+        Transaction transaction = parseTransaction("");
+        generateKeys(transaction);
+        broadcastTransaction();
     }
 
     @Override

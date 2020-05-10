@@ -4,8 +4,7 @@ public interface IMiner {
     void broadcastBlock (Block block);
     // wait until you get block transactions then start mining
     void mineBlock ();
-    void receiveTransaction (Transaction transaction);
-    void addMiner ();
+    void receiveTransaction ();
     //double spending, sum input >= sum output, signature
     boolean verifyTransaction (Transaction transaction);
 }

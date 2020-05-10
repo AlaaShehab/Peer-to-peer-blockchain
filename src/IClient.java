@@ -1,5 +1,5 @@
 public interface IClient {
-    void readTransaction();
+    void readTransaction(String filename);
     //private
     void generateKeys(Transaction transaction);
     void broadcastTransaction();
