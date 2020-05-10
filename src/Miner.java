@@ -157,4 +157,35 @@ public class Miner extends PeerNode implements IMiner {
             toBeMinedBlock.removeTransaction(transaction.getId());
         }
     }
+
+    private Transaction formTransaction(String t) {
+        String[] pairs = t.toString().split(",");
+        Dictionary trans = new Hashtable();
+        for (int i = 0; i < pairs.length; i++) {
+            String[] keyValue = pairs[i].split("=");
+            trans.put(keyValue[0], keyValue[1]);
+        }
+        Transaction transaction = new Transaction();
+        transaction.setHasWitness(Boolean.parseBoolean((String) trans.get("hashWitness")));
+        transaction.setWitnesses((List<Witness>) trans.get("hashWitness"));
+        transaction.setId((String) trans.get("id"));
+
+        transaction.setInputCounter(Integer.parseInt((String) trans.get("inputCounter")));
+        for (int i = 0; i < transaction.getInputCounter(); i++) {
+            TransactionInput transactionInput = new TransactionInput();
+            transactionInput.setPreviousTransaction((String) trans.get("previousTransaction" + (i+1)));
+            transactionInput.setOutputIndex((String) trans.get("outputIndex" + (i+1)));
+            transactionInput.setSignature((String) trans.get("signature" + (i+1)));
+            transactionInput.setPayerPublicKey((String) trans.get("payerPublicKey" + (i+1)));
+        }
+        transaction.setOutputCounter(Integer.parseInt((String) trans.get("outputCounter")));
+        for (int i = 0; i < transaction.getOutputCounter(); i++) {
+            TransactionOutput transactionOutput = new TransactionOutput();
+            transactionOutput.setValue(Float.parseFloat((String) trans.get("value" + (i+1))));
+            transactionOutput.setIndex((String) trans.get("output" + (i+1)));
+            transactionOutput.setPayeePublicKey((String) trans.get("payeePublicKey" + (i+1)));
+            transaction.addOutput(transactionOutput);
+        }
+        return transaction;
+    }
 }

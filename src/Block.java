@@ -102,6 +102,7 @@ public class Block {
 
     public String calculateBlockHash() {
         //TODO calculate hash using sha256
+        return null;
     }
 
     public void setHash (String hash) {

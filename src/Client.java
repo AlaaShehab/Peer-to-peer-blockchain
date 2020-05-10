@@ -51,4 +51,28 @@ public class Client extends PeerNode implements IClient {
     public void broadcastTransaction() {
 
     }
+
+    private static Transaction parseTransaction(String t){
+        String[] params = t.split("\t");
+        Transaction trans = new Transaction();
+        //set id
+        trans.setId(params[0]);
+        // set input
+        TransactionInput transactionInput = new TransactionInput();
+        String[] prevtx = params[2].split(":");
+        String[] opIndex = params[3].split(":");
+        transactionInput.setPreviousTransaction(prevtx[1]);
+        transactionInput.setOutputIndex(opIndex[1]);
+        trans.addInput(transactionInput);
+        //set output
+        for (int i = 4; i < params.length; i+=2) {
+            TransactionOutput transactionOutput = new TransactionOutput();
+            String[] val = params[i].split(":");
+            String[] output = params[i + 1].split(":");
+            transactionOutput.setIndex(output[1]);
+            transactionOutput.setValue(Float.parseFloat(val[1]));
+            trans.addOutput(transactionOutput);
+        }
+        return trans;
+    }
 }
