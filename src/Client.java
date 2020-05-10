@@ -1,14 +1,18 @@
+
 import java.security.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
 
-public class Client implements IClient {
+public class Client extends PeerNode implements IClient {
     Map<String, KeyPair> keys;
-
-    public Client () {
+    
+    public Client(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
+    	super(port, hostName,ID);
         keys = new HashMap<>();
     }
+    
     @Override
     public void readTransaction() {
 
