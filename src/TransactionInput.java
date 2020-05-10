@@ -1,8 +1,8 @@
 public class TransactionInput {
-    private String previousTransaction;
-    private String outputIndex;
-    private String signature;
-    private String payerPublicKey;
+    private String previousTransaction = "";
+    private String outputIndex = "";
+    private String signature = "";
+    private String payerPublicKey = "";
 
     public String getPreviousTransaction() {
         return previousTransaction;

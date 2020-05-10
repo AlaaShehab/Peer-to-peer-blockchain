@@ -10,10 +10,14 @@ public class Block {
     private int blockSize = 10;
     private String hash = "";
     private String merkleTreeRoot = "";
-    private String previousBlockHash;
+    private String previousBlockHash = "";
     private List<Transaction> transactions;
     private long timestamp;
     private int nonce;
+
+    public Block () {
+        transactions = new ArrayList<>();
+    }
 
     public String hash() {
         return hash;

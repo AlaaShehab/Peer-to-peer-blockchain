@@ -13,6 +13,8 @@ public class Miner extends PeerNode implements IMiner {
     	super(port, hostName,ID);
         spendings = new HashSet<>();
         chain = new Blockchain(GensisBlock.getGensisBlock());
+        spendings = new HashSet<>();
+        incomingTransactions = new ArrayList<>();
     }
 
     // Listen on ports for when a new block is broadcasted.

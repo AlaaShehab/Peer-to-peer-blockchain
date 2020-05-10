@@ -10,7 +10,7 @@ public class Blockchain {
     public Blockchain (Block block) {
         this.block = block;
     }
-    //TODO Alaa test addBlock
+
     public boolean addBlock (Block block) {
         if (this.block.hash().equals(block.getPreviousBlockHash())) {
             chain.add(new Blockchain(block));
@@ -24,17 +24,19 @@ public class Blockchain {
         }
         return false;
     }
-    //TODO Alaa test getTransactionBlock
+
     public Blockchain getTransactionBlock (String transactionID) {
         if (block.containsTransaction(transactionID)) {
             return this;
         }
+        Blockchain current = null;
         for (Blockchain child : chain) {
-            if (child.getTransactionBlock(transactionID) != null) {
-                return child;
+            current = child.getTransactionBlock(transactionID);
+            if (current != null) {
+                break;
             }
         }
-        return null;
+        return current;
     }
 
     public Blockchain getChainHead () {

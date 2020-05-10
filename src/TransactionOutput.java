@@ -1,7 +1,7 @@
 public class TransactionOutput {
     private float value;
-    private String index;
-    private String payeePublicKey;
+    private String index = "";
+    private String payeePublicKey = "";
 
     public float getValue() {
         return value;

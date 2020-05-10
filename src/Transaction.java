@@ -17,6 +17,13 @@ public class Transaction {
     private String hash;
     private String id;
 
+    public Transaction () {
+        input = new ArrayList<>();
+        output = new ArrayList<>();
+        witnesses = new ArrayList<>();
+        hash = "";
+        id = "";
+    }
     public boolean isHasWitness() {
         return hasWitness;
     }
