@@ -1,4 +1,5 @@
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -84,14 +85,12 @@ public class Block {
 
         while (tree.size() > 1) {
             int size = tree.size();
-            for (int i = 0; i < size; i += 2) {
-                String node = tree.remove(i);
-                node += i + 1 == size ? node : tree.remove(i+1);
-                try {
-                    tree.add(Utils.toHexString(digest.digest(node.getBytes("UTF-8"))));
-                } catch (UnsupportedEncodingException ex) {
-                    throw new RuntimeException(ex);
-                }
+            int start = 0;
+            while (start < size) {
+                String node = tree.remove(0);
+                node += start + 1 >= size ? node : tree.remove(0);
+                tree.add(Utils.toHexString(digest.digest(node.getBytes(StandardCharsets.UTF_8))));
+                start += 2;
             }
         }
         return tree.get(0);
