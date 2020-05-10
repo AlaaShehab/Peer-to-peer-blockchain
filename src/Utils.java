@@ -8,4 +8,13 @@ public class Utils {
         }
         return hexString.toString();
     }
+    public static byte[] toByte (String hexString) {
+        byte[] byteArray = new byte[hexString.length() / 2];
+        for (int i = 0; i < byteArray.length; i++) {
+            int index = i * 2;
+            int j = Integer.parseInt(hexString.substring(index, index + 2), 16);
+            byteArray[i] = (byte) j;
+        }
+        return byteArray;
+    }
 }

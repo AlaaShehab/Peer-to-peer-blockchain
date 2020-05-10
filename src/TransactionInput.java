@@ -2,6 +2,7 @@ public class TransactionInput {
     private String previousTransaction;
     private String outputIndex;
     private String signature;
+    private String payerPublicKey;
 
     public String getPreviousTransaction() {
         return previousTransaction;
@@ -25,5 +26,13 @@ public class TransactionInput {
 
     public void setSignature(String signature) {
         this.signature = signature;
+    }
+
+    public String getPayerPublicKey() {
+        return payerPublicKey;
+    }
+
+    public void setPayerPublicKey(String payerPublicKey) {
+        this.payerPublicKey = payerPublicKey;
     }
 }
