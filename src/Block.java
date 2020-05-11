@@ -7,13 +7,13 @@ import java.util.List;
 
 public class Block {
 
-    private int blockSize = 10;
-    private String hash = "";
-    private String merkleTreeRoot = "";
-    private String previousBlockHash = "";
-    private List<Transaction> transactions;
-    private long timestamp;
-    private int nonce;
+    public int blockSize = 10;
+    public String hash = "";
+    public String merkleTreeRoot = "";
+    public String previousBlockHash = "";
+    public List<Transaction> transactions;
+    public long timestamp;
+    public int nonce = 0;
 
     public Block () {
         transactions = new ArrayList<>();
@@ -24,13 +24,16 @@ public class Block {
     }
 
     public boolean verifyHash() {
-        //TODO verify hash = calculatedHash
-        return false;
+        return hash.equals(calculateBlockHash());
     }
 
     //Hardness is the number of zeros in the beginning of the hash
     public void solve(int hardness) {
         //TODO do the mining for the block
+        do {
+            nonce++;
+            hash = calculateBlockHash();
+        } while (!hash.substring(0, hardness).equals("0".repeat(hardness)));
     }
 
     @Override
@@ -102,7 +105,14 @@ public class Block {
 
     public String calculateBlockHash() {
         //TODO calculate hash using sha256
-        return null;
+        String input = previousBlockHash + merkleTreeRoot + Long.toString(timestamp) + Integer.toString(nonce);
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            String hashedInput = Utils.toHexString(md.digest(input.getBytes(StandardCharsets.UTF_8)));
+            return hashedInput;
+        } catch (NoSuchAlgorithmException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public void setHash (String hash) {

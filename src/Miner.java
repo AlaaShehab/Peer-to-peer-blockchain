@@ -2,12 +2,14 @@ import javafx.util.Pair;
 
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.TimeUnit;
 
 public class Miner extends PeerNode implements IMiner {
     private Set<Pair<String, String>> spendings;
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
+    private int hardness = 30; // example
 
     public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
     	super(port, hostName,ID);
@@ -41,7 +43,19 @@ public class Miner extends PeerNode implements IMiner {
 
     @Override
     public void mineBlock() {
-
+    	long startTime = System.currentTimeMillis();
+    	List<Transaction> acceptedTransactions;
+        int takenTransactions = 0;
+        while(((System.currentTimeMillis() - startTime) < 10000)&&(takenTransactions < toBeMinedBlock.blockSize)){
+        	acceptedTransactions.add(incomingTransactions.get(takenTransactions));
+        }
+        toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash);
+        toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
+        toBeMinedBlock.setTransactions(acceptedTransactions);
+        toBeMinedBlock.setTimestamp(startTime * 1000);
+        toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
+        toBeMinedBlock.solve(hardness);
+        broadcastBlock(toBeMinedBlock);
     }
     // Listen on ports for when a transactions sent by Clients.
     // Calls verifyTransaction first then if true adds new transaction
