@@ -2,7 +2,6 @@ import javafx.util.Pair;
 
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.TimeUnit;
 
 public class Miner extends PeerNode implements IMiner {
     private Set<Pair<String, String>> spendings;
@@ -43,13 +42,16 @@ public class Miner extends PeerNode implements IMiner {
 
     @Override
     public void mineBlock() {
+        if (toBeMinedBlock == null) {
+            toBeMinedBlock = new Block();
+        }
     	long startTime = System.currentTimeMillis();
-    	List<Transaction> acceptedTransactions;
+    	List<Transaction> acceptedTransactions = new ArrayList<>();
         int takenTransactions = 0;
-        while(((System.currentTimeMillis() - startTime) < 10000)&&(takenTransactions < toBeMinedBlock.blockSize)){
+        while(((System.currentTimeMillis() - startTime) < 10000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
         	acceptedTransactions.add(incomingTransactions.get(takenTransactions));
         }
-        toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash);
+        toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
         toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
         toBeMinedBlock.setTransactions(acceptedTransactions);
         toBeMinedBlock.setTimestamp(startTime * 1000);

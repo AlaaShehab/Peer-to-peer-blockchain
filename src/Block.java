@@ -1,4 +1,3 @@
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -7,13 +6,13 @@ import java.util.List;
 
 public class Block {
 
-    public int blockSize = 10;
-    public String hash = "";
-    public String merkleTreeRoot = "";
-    public String previousBlockHash = "";
-    public List<Transaction> transactions;
-    public long timestamp;
-    public int nonce = 0;
+    private int blockSize = 10;
+    private String hash = "";
+    private String merkleTreeRoot = "";
+    private String previousBlockHash = "";
+    private List<Transaction> transactions;
+    private long timestamp;
+    private int nonce = 0;
 
     public Block () {
         transactions = new ArrayList<>();
