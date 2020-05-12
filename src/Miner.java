@@ -1,11 +1,10 @@
 import com.google.gson.Gson;
-import javafx.util.Pair;
 
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 
 public class Miner extends PeerNode implements IMiner {
-    private Set<Pair<String, String>> spendings;
+    private Set<Pair> spendings;
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
@@ -13,7 +12,6 @@ public class Miner extends PeerNode implements IMiner {
 
     public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
     	super(port, hostName,ID);
-        spendings = new HashSet<>();
         chain = new Blockchain(GensisBlock.getGensisBlock());
         spendings = new HashSet<>();
         incomingTransactions = new ArrayList<>();
@@ -109,7 +107,7 @@ public class Miner extends PeerNode implements IMiner {
             if (initialTransaction(transaction)) {
                 return false;
             }
-            Pair<String, String> coin = new Pair<>(input.getPreviousTransaction(), input.getOutputIndex());
+            Pair coin = new Pair(input.getPreviousTransaction(), input.getOutputIndex());
             if (!spendings.contains(coin)) {
                 return true;
             }
@@ -154,14 +152,14 @@ public class Miner extends PeerNode implements IMiner {
             List<TransactionOutput> outputs = transaction.getAllTransactionOutput();
 
             for (TransactionInput input : inputs) {
-                Pair<String, String> coin = new Pair<>(input.getPreviousTransaction(), input.getOutputIndex());
+                Pair coin = new Pair(input.getPreviousTransaction(), input.getOutputIndex());
                 if (spendings.contains(coin)) {
                     spendings.remove(coin);
                 }
             }
 
             for (TransactionOutput output : outputs) {
-                Pair<String, String> coin = new Pair<>(transaction.getId(), output.getIndex());
+                Pair coin = new Pair(transaction.getId(), output.getIndex());
                 spendings.add(coin);
             }
         }
