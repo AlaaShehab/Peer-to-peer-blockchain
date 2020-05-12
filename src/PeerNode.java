@@ -30,7 +30,6 @@ public class PeerNode {
     	        	gate.await();
     	        	server1.start(port,txList);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
     	    }};

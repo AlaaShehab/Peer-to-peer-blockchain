@@ -9,7 +9,7 @@ public class Client extends PeerNode implements IClient {
     Map<String, KeyPair> keys;
     
     public Client(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
-    	super(port, hostName,ID);
+    	super(port, hostName, ID);
         keys = new HashMap<>();
     }
     
@@ -19,7 +19,7 @@ public class Client extends PeerNode implements IClient {
         //TODO for loop for all transactions then parse each
         Transaction transaction = parseTransaction("");
         generateKeys(transaction);
-        broadcastTransaction();
+        broadcastTransaction(transaction.toString());
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Client extends PeerNode implements IClient {
 
 
     @Override
-    public void broadcastTransaction() {
+    public void broadcastTransaction(String transaction) {
 
     }
 

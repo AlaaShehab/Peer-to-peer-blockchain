@@ -28,7 +28,6 @@ public class Block {
 
     //Hardness is the number of zeros in the beginning of the hash
     public void solve(int hardness) {
-        //TODO do the mining for the block
         do {
             nonce++;
             hash = calculateBlockHash();
@@ -75,7 +74,7 @@ public class Block {
     public void setMerkleTreeRoot(String merkleTreeRoot) {
         this.merkleTreeRoot = merkleTreeRoot;
     }
-    //TODO Alaa test merkle tree root
+
     public String calculateMerkleTreeRoot() {
         ArrayList<String> tree = new ArrayList<>();
         for (Transaction t : transactions) {
@@ -103,7 +102,6 @@ public class Block {
     }
 
     public String calculateBlockHash() {
-        //TODO calculate hash using sha256
         String input = previousBlockHash + merkleTreeRoot + Long.toString(timestamp) + Integer.toString(nonce);
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

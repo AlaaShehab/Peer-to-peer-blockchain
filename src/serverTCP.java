@@ -64,10 +64,8 @@ public class serverTCP {
 				    txList.add(inputLine);
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         	 try {
@@ -75,7 +73,6 @@ public class serverTCP {
 	            out.close();
 				clientSocket.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         }

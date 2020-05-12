@@ -21,16 +21,16 @@ public class Miner extends PeerNode implements IMiner {
     // Listen on ports for when a new block is broadcasted.
     // calls verifyBlock
     @Override
-    public void receiveBlock(Block block) {
-
-    }
-
-    // private method called from receive
-    // verify the received block then stop miner if valid block
-    // call updateToBeMinedBlockTransaction to remove old transactions
-    // call updateSpending on every incoming verified block
-    private boolean verifyBlock(Block block) {
-        return false;
+    public void receiveBlock(String block) {
+        //TODO build the block from the file
+        Block b = new Block(); //dump block will be replaced once we build the new block
+        if (!b.verifyHash() || !chain.addBlock(b)) {
+            //TODO return false as this block is not added
+            return;
+        }
+        updateSpendings(b);
+        updateToBeMinedBlockTransaction(b);
+        //TODO call mining again here or after method returns
     }
 
     // Broadcast block after it is mined.
@@ -58,13 +58,14 @@ public class Miner extends PeerNode implements IMiner {
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
         toBeMinedBlock.solve(hardness);
         broadcastBlock(toBeMinedBlock);
+        //TODO set toBeMinedBlock = null after broadcasting is done
+        //TODO update spendings after broadcasting is done
     }
     // Listen on ports for when a transactions sent by Clients.
     // Calls verifyTransaction first then if true adds new transaction
     @Override
-    public void receiveTransaction() {
-        //TODO receive string tx
-        Transaction transaction = buildTransaction("tx");
+    public void receiveTransaction(String trans) {
+        Transaction transaction = buildTransaction(trans);
         boolean validTransaction = verifyTransaction(transaction);
         //TODO If not valid do something else
         if (validTransaction) {
