@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 
@@ -11,7 +10,7 @@ public class Miner extends PeerNode implements IMiner {
     private int hardness = 30; // example
 
     public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
-    	super(port, hostName,ID);
+    	super(port, hostName,ID,"miner");
         chain = new Blockchain(GensisBlock.getGensisBlock());
         spendings = new HashSet<>();
         incomingTransactions = new ArrayList<>();
@@ -35,7 +34,25 @@ public class Miner extends PeerNode implements IMiner {
     @Override
     public void broadcastBlock() {
         String toBroadcast = convertBlockToString(toBeMinedBlock);
-        //TODO call send block (Rita)
+        //sending block to all clients and miners except me.
+        Enumeration<Integer> e = clientsPorts.elements();
+    	while (e.hasMoreElements()) { 
+    		client1.startConnection("127.0.0.1", e.nextElement());
+    		String msg1 = client1.sendMessage("block"); 
+			msg1 = client1.sendMessage(toBroadcast);            	
+			client1.stopConnection();
+    	}
+    	@SuppressWarnings("unchecked")
+		Hashtable<Integer, Integer> clone =  (Hashtable<Integer, Integer>) minersPorts.clone() ;
+    	clone.remove(this.ID);
+		Enumeration<Integer> e2 = clone.elements();
+    	while (e2.hasMoreElements()) { 
+    		client1.startConnection("127.0.0.1", e2.nextElement());
+    		String msg1 = client1.sendMessage("block"); 
+			msg1 = client1.sendMessage(toBroadcast);            	
+			client1.stopConnection();
+    	}
+    	
         updateSpendings(toBeMinedBlock);
         toBeMinedBlock = null;
     }

@@ -1,5 +1,10 @@
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.*;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,17 +14,25 @@ public class Client extends PeerNode implements IClient {
     Map<String, KeyPair> keys;
     
     public Client(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
-    	super(port, hostName, ID);
+    	super(port, hostName, ID,"client");
         keys = new HashMap<>();
     }
     
+    
     @Override
-    public void readTransaction(String filename) {
-        //TODO read file
-        //TODO for loop for all transactions then parse each
-        Transaction transaction = parseTransaction("");
-        generateKeys(transaction);
-        broadcastTransaction(transaction.toString());
+    public void readTransaction(String filename) throws IOException {
+    	broadcastTransaction("transaction"); //to start adding in txList
+    	File file=new File(filename);    //creates a new file instance  
+    	FileReader fr=new FileReader(file);   //reads the file  
+    	BufferedReader br=new BufferedReader(fr); 
+    	String line;  
+    	while((line=br.readLine())!=null)  
+    	{  
+			Transaction transaction = parseTransaction(line);
+			generateKeys(transaction);
+			broadcastTransaction(transaction.toString()); 
+    	}  
+    	fr.close();
     }
 
     @Override
@@ -52,7 +65,13 @@ public class Client extends PeerNode implements IClient {
 
 
     @Override
-    public void broadcastTransaction(String transaction) {
+    public void broadcastTransaction(String transaction) {    	
+    	Enumeration<Integer> e = minersPorts.elements();
+    	while (e.hasMoreElements()) { 
+    		client1.startConnection("127.0.0.1", e.nextElement());
+			String msg1 = client1.sendMessage(transaction);            	
+			client1.stopConnection();
+    	}
 
     }
 

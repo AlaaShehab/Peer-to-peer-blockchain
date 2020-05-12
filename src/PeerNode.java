@@ -1,9 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -15,20 +10,37 @@ public class PeerNode {
 	clientTCP client1;
 	serverTCP server1;
 	ArrayList<String> txList;
+	ArrayList<String> blockList;
+	//TODO first load it from file, and last save it to the file
+	static String portsFile = "/home/rita/git/Peer-to-peer-blockchain/src/ports.txt";
+	static Hashtable<Integer, Integer> minersPorts;
+	static Hashtable<Integer, Integer> clientsPorts;
 	
-	public PeerNode(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
+	public PeerNode(int port,String hostName,int ID,String type) throws InterruptedException, BrokenBarrierException {
 		this.hostName=hostName;
 		this.port =port;
 		this.ID = ID;
 		server1 = new serverTCP();
 		client1 = new clientTCP();
 		txList = new ArrayList<String>();
+		blockList = new ArrayList<String>();
+		if(type.equals("miner")) {
+			if(minersPorts==null) {
+				minersPorts = new Hashtable<Integer, Integer>();
+			}
+			minersPorts.put(ID, port);
+		}else if(type.equals("client")) {
+			if(clientsPorts==null) {
+				clientsPorts = new Hashtable<Integer, Integer>();
+			}
+			clientsPorts.put(ID, port);
+		}
 		final CyclicBarrier gate = new CyclicBarrier(2);
 		Thread t1 = new Thread(){
     	    public void run(){
     	    	try {
     	        	gate.await();
-    	        	server1.start(port,txList);
+    	        	server1.start(port,txList,blockList);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -37,23 +49,23 @@ public class PeerNode {
 	        t1.start();
 	        gate.await();
 	}
-	public void broadcast(Hashtable<Integer, Integer> toPortsTable, String txFileName) throws IOException{
+	/*public void broadcast(Hashtable<Integer, Integer> toPortsTable, String txFileName) throws IOException{
 		Enumeration<Integer> e = toPortsTable.elements();
-        while (e.hasMoreElements()) { 
-        	client1.startConnection("127.0.0.1", e.nextElement());
+        
         	File file=new File(txFileName);    //creates a new file instance  
         	FileReader fr=new FileReader(file);   //reads the file  
         	BufferedReader br=new BufferedReader(fr);  //creates a buffering character input stream   //constructs a string buffer with no characters  
         	String line;  
         	while((line=br.readLine())!=null)  
         	{  
-        		String msg1 = client1.sendMessage(line);
-        	    //System.out.println(msg1); 
+        		while (e.hasMoreElements()) { 
+                	client1.startConnection("127.0.0.1", e.nextElement());
+                	String msg1 = client1.sendMessage(line);            	
+                	client1.stopConnection();
+        		}
+        		e = toPortsTable.elements();
         	}  
         	fr.close();    	    
-        } 
-    	
-       client1.stopConnection();
-	}
+	}*/
 	
 }

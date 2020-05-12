@@ -1,28 +1,27 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.concurrent.BrokenBarrierException;
 
 public class Main {
-
-	@SuppressWarnings("unchecked")
+	
 	public static void main(String[] args) throws InterruptedException, BrokenBarrierException, IOException {
 		
-		Hashtable<Integer, Integer> PortsTable = new Hashtable<Integer, Integer>();
+		Client client1 = new Client(1024, "127.0.0.1", 1);
+		Miner miner1 = new Miner(1025, "127.0.0.1", 2);
+		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
 		
-		PeerNode peer1 = new PeerNode(5000, "127.0.0.1", 1);
-		PortsTable.put(1, 5000);
-		PeerNode peer2 = new PeerNode(5001, "127.0.0.1", 2);
-		PortsTable.put(2, 5001);
-		PeerNode peer3 = new PeerNode(5002, "127.0.0.1", 3);
-		PortsTable.put(3, 5002);
+		//Test client Broadcast
+		client1.readTransaction("/home/rita/git/Peer-to-peer-blockchain/src/txdataset.txt");
 		
-		Hashtable<Integer, Integer> h1 = (Hashtable<Integer, Integer>)PortsTable.clone(); 
-		h1.remove(1);
-		peer1.broadcast(h1,"txdataset.txt");
-	    ArrayList<String> l = peer2.txList;
+		
+		System.out.println("miner1");
+		ArrayList<String> l = miner1.txList;
 	    for(int i=0;i<l.size();i++)
 	    	System.out.println(l.get(i));
+	    System.out.println("miner2");
+	    ArrayList<String> l2 = miner2.txList;
+	    for(int i=0;i<l2.size();i++)
+	    	System.out.println(l2.get(i));
 	    
 
 	}

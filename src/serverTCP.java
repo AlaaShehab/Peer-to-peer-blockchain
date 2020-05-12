@@ -11,16 +11,13 @@ import java.util.concurrent.TimeUnit;
 public class serverTCP {
 	private ServerSocket serverSocket;
 	private ClientHandler clientHandler;
-    public ArrayList<String> getTxList() {
-		return clientHandler.getTxList();
-	}
 
-	public void start(int port, ArrayList<String> txList) {
+	public void start(int port, ArrayList<String> txList, ArrayList<String> blockList) {
     	try {
 	    	serverSocket = new ServerSocket(port);
 	    	
 			while (true) {
-				clientHandler= new ClientHandler(serverSocket.accept(),txList);
+				clientHandler= new ClientHandler(serverSocket.accept(),txList,blockList);
 						clientHandler.start();
 			}
 	         
@@ -38,16 +35,17 @@ public class serverTCP {
         private PrintWriter out;
         private BufferedReader in;
         private ArrayList<String> txList;
+        private ArrayList<String> blockList;
+        static boolean isTx=false;
  
-        public ClientHandler(Socket socket, ArrayList<String> txList) {
+        public ClientHandler(Socket socket, ArrayList<String> txList,ArrayList<String> blockList) {
             this.clientSocket = socket;
             this.txList=txList;
+            this.blockList =blockList;
         }
-        public ArrayList<String> getTxList() {
-    		return txList;
-    	}
  
         public void run() {
+        	
         	try {
 	            out = new PrintWriter(clientSocket.getOutputStream(), true);
 	            in = new BufferedReader(
@@ -56,12 +54,24 @@ public class serverTCP {
 	            String inputLine;            
 				while ((inputLine = in.readLine()) != null) {
 					TimeUnit.SECONDS.sleep(1);
+					//TODO remove it or state instruction for the end
 				    if (".".equals(inputLine)) {
 				        out.println("bye");
 				        break;
 				    }
+				    if ("transaction".equals(inputLine)) {
+				        isTx=true;
+				    }
+				    if ("block".equals(inputLine)) {
+				        isTx=false;
+				    }
+				    if(isTx) {
+				    	txList.add(inputLine);
+				    }else {
+				    	blockList.add(inputLine);
+				    }
 				    out.println(inputLine);
-				    txList.add(inputLine);
+				    
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
