@@ -22,23 +22,24 @@ public class Miner extends PeerNode implements IMiner {
     // Listen on ports for when a new block is broadcasted.
     // calls verifyBlock
     @Override
-    public void receiveBlock(String block) {
-        //TODO build the block from the file
-        Block b = new Block(); //dump block will be replaced once we build the new block
-        if (!b.verifyHash() || !chain.addBlock(b)) {
-            //TODO return false as this block is not added
+    public void receiveBlock(String receivedBlock) {
+        Block block = buildBlock(receivedBlock);
+        if (!block.verifyHash() || !chain.addBlock(block)) {
             return;
         }
-        updateSpendings(b);
-        updateToBeMinedBlockTransaction(b);
+        updateSpendings(block);
+        updateToBeMinedBlockTransaction(block);
         //TODO call mining again here or after method returns
     }
 
     // Broadcast block after it is mined.
     // update spendings before broadcasting the block
     @Override
-    public void broadcastBlock(Block block) {
-
+    public void broadcastBlock() {
+        String toBroadcast = convertBlockToString(toBeMinedBlock);
+        //TODO call send block (Rita)
+        updateSpendings(toBeMinedBlock);
+        toBeMinedBlock = null;
     }
 
     @Override
@@ -58,9 +59,7 @@ public class Miner extends PeerNode implements IMiner {
         toBeMinedBlock.setTimestamp(startTime * 1000);
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
         toBeMinedBlock.solve(hardness);
-        broadcastBlock(toBeMinedBlock);
-        //TODO set toBeMinedBlock = null after broadcasting is done
-        //TODO update spendings after broadcasting is done
+        broadcastBlock();
     }
     // Listen on ports for when a transactions sent by Clients.
     // Calls verifyTransaction first then if true adds new transaction
@@ -68,7 +67,6 @@ public class Miner extends PeerNode implements IMiner {
     public void receiveTransaction(String trans) {
         Transaction transaction = buildTransaction(trans);
         boolean validTransaction = verifyTransaction(transaction);
-        //TODO If not valid do something else
         if (validTransaction) {
             incomingTransactions.add(transaction);
         }
