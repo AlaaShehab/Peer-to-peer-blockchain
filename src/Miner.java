@@ -1,3 +1,4 @@
+import com.google.gson.Gson;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -204,5 +205,27 @@ public class Miner extends PeerNode implements IMiner {
             transaction.addOutput(transactionOutput);
         }
         return transaction;
+    }
+
+    public String convertBlockToString (Block block) {
+        Gson parser = new Gson();
+        return parser.toJson(block);
+    }
+
+    public Block buildBlock (String block) {
+        Gson parser = new Gson();
+        return parser.fromJson(block, Block.class);
+    }
+
+    public boolean isReceivedStringBlock (String received) {
+        Gson parser = new Gson();
+        Block block = parser.fromJson(received, Block.class);
+        return !block.hash().isEmpty();
+    }
+
+    public boolean isReceivedStringTransaction (String received) {
+        Gson parser = new Gson();
+        Transaction transaction = parser.fromJson(received, Transaction.class);
+        return !transaction.getId().isEmpty();
     }
 }
