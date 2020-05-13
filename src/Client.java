@@ -22,11 +22,21 @@ public class Client extends PeerNode implements IClient {
     @Override
     public void readTransaction(String filename) throws IOException {
     	broadcastTransaction("transaction"); //to start adding in txList
-    	File file=new File(filename);    //creates a new file instance  
-    	FileReader fr=new FileReader(file);   //reads the file  
-    	BufferedReader br=new BufferedReader(fr); 
-    	String line;  
-    	while((line=br.readLine())!=null)  
+        File fileBasic = new File(filename + "Basic");    //creates a new file instance
+        FileReader frBasic = new FileReader(fileBasic);   //reads the file
+        BufferedReader brBasic = new BufferedReader(frBasic);
+        String line;
+        while((line=brBasic.readLine())!=null)
+        {
+            Transaction transaction = parseBasicTransaction(line);
+            generateKeys(transaction);
+            broadcastTransaction(transaction.toString());
+        }
+        frBasic.close();
+        File file = new File(filename);    //creates a new file instance
+    	FileReader fr = new FileReader(file);   //reads the file
+    	BufferedReader br = new BufferedReader(fr);
+    	while((line=br.readLine())!=null)
     	{  
 			Transaction transaction = parseTransaction(line);
 			generateKeys(transaction);
@@ -96,6 +106,27 @@ public class Client extends PeerNode implements IClient {
             transactionOutput.setValue(Float.parseFloat(val[1]));
             trans.addOutput(transactionOutput);
         }
+        return trans;
+    }
+
+    public static Transaction parseBasicTransaction(String t){
+        String[] params = t.split("\t");
+        Transaction trans = new Transaction();
+        //set id
+        trans.setId(params[0]);
+        // set input
+        TransactionInput transactionInput = new TransactionInput();
+        String[] opIndex = params[1].split(":");
+        transactionInput.setOutputIndex(opIndex[1]);
+        transactionInput.setPreviousTransaction("0");
+        trans.addInput(transactionInput);
+        //set output
+        TransactionOutput transactionOutput = new TransactionOutput();
+        String[] value = params[2].split(":");
+        String[] index = params[3].split(":");
+        transactionOutput.setValue(Float.parseFloat(value[1]));
+        transactionOutput.setIndex(index[1]);
+        trans.addOutput(transactionOutput);
         return trans;
     }
 }
