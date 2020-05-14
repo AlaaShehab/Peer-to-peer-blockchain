@@ -12,7 +12,7 @@ public class PeerNode {
 	ArrayList<String> txList;
 	ArrayList<String> blockList;
 	//TODO first load it from file, and last save it to the file
-	static String portsFile = "/home/rita/git/Peer-to-peer-blockchain/src/ports.txt";
+	static String portsFile = "ports.txt";
 	static Hashtable<Integer, Integer> minersPorts;
 	static Hashtable<Integer, Integer> clientsPorts;
 	

@@ -1,4 +1,6 @@
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,6 +32,8 @@ public class Client extends PeerNode implements IClient {
         {
             Transaction transaction = parseBasicTransaction(line);
             generateKeys(transaction);
+//            Gson parser = new Gson();
+//            broadcastTransaction(parser.toJson(transaction));
             broadcastTransaction(transaction.toString());
         }
         frBasic.close();
@@ -37,11 +41,11 @@ public class Client extends PeerNode implements IClient {
     	FileReader fr = new FileReader(file);   //reads the file
     	BufferedReader br = new BufferedReader(fr);
     	while((line=br.readLine())!=null)
-    	{  
+    	{
 			Transaction transaction = parseTransaction(line);
 			generateKeys(transaction);
-			broadcastTransaction(transaction.toString()); 
-    	}  
+			broadcastTransaction(transaction.toString());
+    	}
     	fr.close();
     }
 

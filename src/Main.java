@@ -8,10 +8,33 @@ public class Main {
 		
 		Client client1 = new Client(1024, "127.0.0.1", 1);
 		Miner miner1 = new Miner(1025, "127.0.0.1", 2);
+
+		new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					System.out.println("Main - transaction - error sleeping");
+				}
+				miner1.receiveTransaction();
+			}
+		}).start();
+
+		new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					System.out.println("Main - transaction - error sleeping");
+				}
+				miner1.mineBlock();
+			}
+		}).start();
+
 		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
 		
 		//Test client Broadcast
-		client1.readTransaction("/home/rita/git/Peer-to-peer-blockchain/src/txdataset.txt");
+		client1.readTransaction("txdataset.txt");
 		
 		
 		System.out.println("miner1");

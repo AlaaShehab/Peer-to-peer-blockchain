@@ -65,10 +65,13 @@ public class Miner extends PeerNode implements IMiner {
     	long startTime = System.currentTimeMillis();
     	List<Transaction> acceptedTransactions = new ArrayList<>();
         int takenTransactions = 0;
-        while(((System.currentTimeMillis() - startTime) < 10000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
-        	acceptedTransactions.add(incomingTransactions.get(0));
-                incomingTransactions.remove(0);
-                takenTransactions ++;
+        while(((System.currentTimeMillis() - startTime) < 60000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
+            if (incomingTransactions.isEmpty()) {
+                continue;
+            }
+            acceptedTransactions.add(incomingTransactions.get(0));
+            incomingTransactions.remove(0);
+            takenTransactions ++;
         }
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
         toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
@@ -81,11 +84,17 @@ public class Miner extends PeerNode implements IMiner {
     // Listen on ports for when a transactions sent by Clients.
     // Calls verifyTransaction first then if true adds new transaction
     @Override
-    public void receiveTransaction(String trans) {
-        Transaction transaction = buildTransaction(trans);
-        boolean validTransaction = verifyTransaction(transaction);
-        if (validTransaction) {
-            incomingTransactions.add(transaction);
+    public void receiveTransaction() {
+        while (!txList.isEmpty()) {
+            if (txList.get(0).equals("transaction")) {
+                txList.remove(0);
+                continue;
+            }
+            Transaction transaction = buildTransaction(txList.remove(0));
+            boolean validTransaction = verifyTransaction(transaction);
+            if (validTransaction) {
+                incomingTransactions.add(transaction);
+            }
         }
     }
 
@@ -230,6 +239,11 @@ public class Miner extends PeerNode implements IMiner {
     public Block buildBlock (String block) {
         Gson parser = new Gson();
         return parser.fromJson(block, Block.class);
+    }
+
+    public Transaction buildTransaction_ (String transaction) {
+        Gson parser = new Gson();
+        return parser.fromJson(transaction, Transaction.class);
     }
 
     public boolean isReceivedStringBlock (String received) {
