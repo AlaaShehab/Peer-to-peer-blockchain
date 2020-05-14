@@ -162,7 +162,7 @@ public class Miner extends PeerNode implements IMiner {
 
     private boolean initialTransaction (Transaction transaction) {
         return transaction.getAllTransactionInput().size() == 1
-                && transaction.getAllTransactionInput().get(0).getPreviousTransaction().equals("0");
+                && transaction.getAllTransactionInput().get(0).getOutputIndex().equals("0");
     }
     private void updateSpendings (Block block) {
         List<Transaction> transactions = block.getTransactions();

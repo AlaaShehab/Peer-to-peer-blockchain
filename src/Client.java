@@ -22,7 +22,7 @@ public class Client extends PeerNode implements IClient {
     @Override
     public void readTransaction(String filename) throws IOException {
     	broadcastTransaction("transaction"); //to start adding in txList
-        File fileBasic = new File(filename + "Basic");    //creates a new file instance
+        File fileBasic = new File(filename);    //creates a new file instance
         FileReader frBasic = new FileReader(fileBasic);   //reads the file
         BufferedReader brBasic = new BufferedReader(frBasic);
         String line;
@@ -53,7 +53,7 @@ public class Client extends PeerNode implements IClient {
         for (TransactionInput input : inputs) {
             KeyPair key = null;
             if (transaction.getAllTransactionInput().size() == 1
-                    && transaction.getAllTransactionInput().get(0).getPreviousTransaction().equals("0")) {
+                    && transaction.getAllTransactionInput().get(0).getOutputIndex().equals("0")) {
                 key = KeyUtils.GenerateKeys();
             } else {
                 key = keys.get(input.getOutputIndex());
