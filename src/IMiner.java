@@ -1,6 +1,6 @@
 public interface IMiner {
 
-    void receiveBlock (String block);
+    void receiveBlock ();
     void broadcastBlock ();
     void mineBlock ();
     void receiveTransaction ();

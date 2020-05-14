@@ -20,8 +20,11 @@ public class Miner extends PeerNode implements IMiner {
     // Listen on ports for when a new block is broadcasted.
     // calls verifyBlock
     @Override
-    public void receiveBlock(String receivedBlock) {
-        Block block = buildBlock(receivedBlock);
+    public void receiveBlock() {
+        if (blockList.isEmpty()) {
+            return;
+        }
+        Block block = buildBlock(blockList.remove(0));
         if (!block.verifyHash() || !chain.addBlock(block)) {
             return;
         }

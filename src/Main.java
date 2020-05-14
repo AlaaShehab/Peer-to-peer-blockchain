@@ -20,6 +20,17 @@ public class Main {
 			}
 		}).start();
 
+		new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					System.out.println("Main - Block - error sleeping");
+				}
+				miner1.receiveBlock();
+			}
+		}).start();
+
 		miner1.restartMiningThread();
 
 		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
