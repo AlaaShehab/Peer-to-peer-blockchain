@@ -19,12 +19,11 @@ public class Client extends PeerNode implements IClient {
     	super(port, hostName, ID,"client");
         keys = new HashMap<>();
     }
-    
-    
+
     @Override
     public void readTransaction(String filename) throws IOException {
     	broadcastTransaction("transaction"); //to start adding in txList
-        File fileBasic = new File(filename);    //creates a new file instance
+        File fileBasic = new File(filename + "Basic.txt");    //creates a new file instance
         FileReader frBasic = new FileReader(fileBasic);   //reads the file
         BufferedReader brBasic = new BufferedReader(frBasic);
         String line;
@@ -32,19 +31,19 @@ public class Client extends PeerNode implements IClient {
         {
             Transaction transaction = parseBasicTransaction(line);
             generateKeys(transaction);
-//            Gson parser = new Gson();
-//            broadcastTransaction(parser.toJson(transaction));
-            broadcastTransaction(transaction.toString());
+            Gson parser = new Gson();
+            broadcastTransaction(parser.toJson(transaction));
         }
         frBasic.close();
-        File file = new File(filename);    //creates a new file instance
+        File file = new File(filename + ".txt");    //creates a new file instance
     	FileReader fr = new FileReader(file);   //reads the file
     	BufferedReader br = new BufferedReader(fr);
     	while((line=br.readLine())!=null)
     	{
 			Transaction transaction = parseTransaction(line);
 			generateKeys(transaction);
-			broadcastTransaction(transaction.toString());
+            Gson parser = new Gson();
+            broadcastTransaction(parser.toJson(transaction));
     	}
     	fr.close();
     }
@@ -76,7 +75,6 @@ public class Client extends PeerNode implements IClient {
             output.setPayeePublicKey(KeyUtils.getPublicKeyString(key.getPublic()));
         }
     }
-
 
     @Override
     public void broadcastTransaction(String transaction) {    	

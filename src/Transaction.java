@@ -147,26 +147,4 @@ public class Transaction {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        Dictionary transaction = new Hashtable();
-        transaction.put("id", id);
-        transaction.put("hash", hash);
-        transaction.put("inputCounter", inputCounter);
-        for (int i = 0; i < inputCounter; i++) {
-            transaction.put("previousTransaction" + (i+1), input.get(i).getPreviousTransaction());
-            transaction.put("outputIndex" + (i+1), input.get(i).getOutputIndex());
-            transaction.put("payerPublicKey" + (i+1), input.get(i).getPayerPublicKey());
-            transaction.put("signature" + (i+1), input.get(i).getSignature());
-        }
-        transaction.put("outputCounter", outputCounter);
-        for (int i = 0; i < outputCounter; i++) {
-            transaction.put("output" + (i+1), output.get(i).getIndex());
-            transaction.put("value" + (i+1), output.get(i).getValue());
-            transaction.put("payeePublicKey" + (i+1), output.get(i).getPayeePublicKey());
-        }
-        transaction.put("witnesses", witnesses);
-        transaction.put("hasWitness", hasWitness);
-        return transaction.toString();
-    }
 }
