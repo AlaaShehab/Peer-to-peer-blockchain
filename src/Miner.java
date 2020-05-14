@@ -66,8 +66,9 @@ public class Miner extends PeerNode implements IMiner {
     	List<Transaction> acceptedTransactions = new ArrayList<>();
         int takenTransactions = 0;
         while(((System.currentTimeMillis() - startTime) < 10000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
-        	acceptedTransactions.add(incomingTransactions.get(takenTransactions));
-                incomingTransaction.remove(takenTransactions);
+        	acceptedTransactions.add(incomingTransactions.get(0));
+                incomingTransaction.remove(0);
+                takenTransactions ++;
         }
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
         toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());

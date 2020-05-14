@@ -26,12 +26,21 @@ public class Block {
         return hash.equals(calculateBlockHash());
     }
 
+    public String calculatehardString(int hardness){
+	String repeated = "";
+         for (int i = 0; i < hardness; i++){
+             repeated += "0";
+         }
+        return repeated;
+    }
+	
     //Hardness is the number of zeros in the beginning of the hash
     public void solve(int hardness) {
+        String hardString = calculatehardString(hardness);
         do {
             nonce++;
             hash = calculateBlockHash();
-        } while (!hash.substring(0, hardness).equals("0".repeat(hardness)));
+        } while (!hash.substring(0, hardness).equals(hardString)));
     }
 
     @Override
