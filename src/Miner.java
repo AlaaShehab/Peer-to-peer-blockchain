@@ -67,7 +67,7 @@ public class Miner extends PeerNode implements IMiner {
         int takenTransactions = 0;
         while(((System.currentTimeMillis() - startTime) < 10000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
         	acceptedTransactions.add(incomingTransactions.get(0));
-                incomingTransaction.remove(0);
+                incomingTransactions.remove(0);
                 takenTransactions ++;
         }
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());

@@ -40,7 +40,7 @@ public class Block {
         do {
             nonce++;
             hash = calculateBlockHash();
-        } while (!hash.substring(0, hardness).equals(hardString)));
+        } while (!hash.substring(0, hardness).equals(hardString));
     }
 
     @Override
