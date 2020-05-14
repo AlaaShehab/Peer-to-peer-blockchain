@@ -8,6 +8,7 @@ public class Miner extends PeerNode implements IMiner {
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
     private int hardness = 30; // example
+    private Thread miningThread;
 
     public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
     	super(port, hostName,ID,"miner");
@@ -19,14 +20,32 @@ public class Miner extends PeerNode implements IMiner {
     // Listen on ports for when a new block is broadcasted.
     // calls verifyBlock
     @Override
-    public void receiveBlock(String receivedBlock) {
-        Block block = buildBlock(receivedBlock);
+    public void receiveBlock() {
+        if (blockList.isEmpty()) {
+            return;
+        }
+        Block block = buildBlock(blockList.remove(0));
         if (!block.verifyHash() || !chain.addBlock(block)) {
             return;
         }
+        miningThread.interrupt();
         updateSpendings(block);
         updateToBeMinedBlockTransaction(block);
-        //TODO call mining again here or after method returns
+        restartMiningThread();
+    }
+
+    public void restartMiningThread() {
+        miningThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    System.out.println("Miner - MiningBlock - thread interrupted");
+                }
+                mineBlock();
+            }
+        });
+        miningThread.start();
     }
 
     // Broadcast block after it is mined.

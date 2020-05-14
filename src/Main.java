@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.concurrent.BrokenBarrierException;
 
 public class Main {
-	
+
 	public static void main(String[] args) throws InterruptedException, BrokenBarrierException, IOException {
 		
 		Client client1 = new Client(1024, "127.0.0.1", 1);
@@ -25,11 +25,13 @@ public class Main {
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
-					System.out.println("Main - transaction - error sleeping");
+					System.out.println("Main - Block - error sleeping");
 				}
-				miner1.mineBlock();
+				miner1.receiveBlock();
 			}
 		}).start();
+
+		miner1.restartMiningThread();
 
 		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
 		
