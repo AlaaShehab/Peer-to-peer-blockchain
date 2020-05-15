@@ -22,7 +22,6 @@ public class Client extends PeerNode implements IClient {
 
     @Override
     public void readTransaction(String filename) throws IOException {
-    	broadcastTransaction("transaction"); //to start adding in txList
         File fileBasic = new File(filename + "Basic.txt");    //creates a new file instance
         FileReader frBasic = new FileReader(fileBasic);   //reads the file
         BufferedReader brBasic = new BufferedReader(frBasic);
@@ -81,6 +80,7 @@ public class Client extends PeerNode implements IClient {
     	Enumeration<Integer> e = minersPorts.elements();
     	while (e.hasMoreElements()) { 
     		client1.startConnection("127.0.0.1", e.nextElement());
+		client1.sendMessage("transaction"); 
 			String msg1 = client1.sendMessage(transaction);            	
 			client1.stopConnection();
     	}
