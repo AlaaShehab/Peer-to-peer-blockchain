@@ -17,13 +17,12 @@ public class Miner extends PeerNode implements IMiner {
         incomingTransactions = new ArrayList<>();
     }
 
-    // Listen on ports for when a new block is broadcasted.
-    // calls verifyBlock
     @Override
     public void receiveBlock() {
         if (blockList.isEmpty()) {
             return;
         }
+        System.out.println("Receiving block");
         Block block = buildBlock(blockList.remove(0));
         if (!block.verifyHash() || !chain.addBlock(block)) {
             return;
@@ -37,11 +36,6 @@ public class Miner extends PeerNode implements IMiner {
     public void restartMiningThread() {
         miningThread = new Thread(() -> {
             while (true) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    System.out.println("Miner - MiningBlock - thread interrupted");
-                }
                 mineBlock();
             }
         });
@@ -84,20 +78,27 @@ public class Miner extends PeerNode implements IMiner {
     	long startTime = System.currentTimeMillis();
     	List<Transaction> acceptedTransactions = new ArrayList<>();
         int takenTransactions = 0;
-        while(((System.currentTimeMillis() - startTime) < 60000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
+        while(((System.currentTimeMillis() - startTime) < 20000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
             if (incomingTransactions.isEmpty()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    System.out.println("Main - Block - error sleeping");
+                }
                 continue;
             }
-            acceptedTransactions.add(incomingTransactions.get(0));
-            incomingTransactions.remove(0);
-            takenTransactions ++;
+            acceptedTransactions.add(incomingTransactions.remove(0));
+            System.out.println("Adding transaction to block :" + incomingTransactions.size());
+            takenTransactions++;
         }
+        System.out.println("Mining block");
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
-        toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
         toBeMinedBlock.setTransactions(acceptedTransactions);
+        toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
         toBeMinedBlock.setTimestamp(startTime * 1000);
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
         toBeMinedBlock.solve(hardness);
+        System.out.println(toBeMinedBlock.hash());
         broadcastBlock();
     }
     // Listen on ports for when a transactions sent by Clients.
@@ -113,6 +114,7 @@ public class Miner extends PeerNode implements IMiner {
             boolean validTransaction = verifyTransaction(transaction);
             if (validTransaction) {
                 incomingTransactions.add(transaction);
+                System.out.println("Adding transaction to list : " + incomingTransactions.size());
             }
         }
     }
