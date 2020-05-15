@@ -58,7 +58,7 @@ public class Client extends PeerNode implements IClient {
                     && transaction.getAllTransactionInput().get(0).getOutputIndex().equals("0")) {
                 key = KeyUtils.GenerateKeys();
             } else {
-                key = keys.get(input.getOutputIndex());
+                key = keys.get(input.getPayerPublicKey());
             }
             input.setSignature(KeyUtils.generateSignature(key.getPrivate(), input.getOutputIndex()));
             input.setPayerPublicKey(KeyUtils.getPublicKeyString(key.getPublic()));
