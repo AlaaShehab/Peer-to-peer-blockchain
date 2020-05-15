@@ -1,4 +1,4 @@
-public class TransactionInput {
+public class TransactionInput implements Cloneable{
     private String previousTransaction = "";
     private String outputIndex = "";
     private String signature = "";
@@ -34,5 +34,15 @@ public class TransactionInput {
 
     public void setPayerPublicKey(String payerPublicKey) {
         this.payerPublicKey = payerPublicKey;
+    }
+
+    @Override
+    public TransactionInput clone()throws CloneNotSupportedException{
+        TransactionInput cloned = new TransactionInput();
+        cloned.setSignature(this.signature);
+        cloned.setOutputIndex(this.outputIndex);
+        cloned.setPreviousTransaction(this.previousTransaction);
+        cloned.setPayerPublicKey(this.payerPublicKey);
+        return cloned;
     }
 }

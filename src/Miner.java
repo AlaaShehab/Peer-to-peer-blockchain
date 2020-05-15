@@ -74,7 +74,8 @@ public class Miner extends PeerNode implements IMiner {
         }
     	long startTime = System.currentTimeMillis();
         int takenTransactions = 0;
-        while(((System.currentTimeMillis() - startTime) < 20000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
+        while(((System.currentTimeMillis() - startTime) < 20000&& takenTransactions < toBeMinedBlock.getBlockSize())
+                || takenTransactions == 0){
             if (incomingTransactions.isEmpty()) {
                 try {
                     Thread.sleep(1);
@@ -95,6 +96,11 @@ public class Miner extends PeerNode implements IMiner {
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
         toBeMinedBlock.solve(hardness);
         System.out.println(toBeMinedBlock.hash());
+        try {
+            chain.addBlock(toBeMinedBlock.clone());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         broadcastBlock();
     }
 
@@ -178,7 +184,8 @@ public class Miner extends PeerNode implements IMiner {
     }
 
     private Transaction getTransaction (String TransactionID) {
-        Block previousTransBlock = chain.getTransactionBlock(TransactionID).block;
+        Blockchain currentChain = chain.getTransactionBlock(TransactionID);
+        Block previousTransBlock = currentChain == null ? toBeMinedBlock : currentChain.block;
         return previousTransBlock == null ? null : previousTransBlock.getTransaction(TransactionID);
     }
 

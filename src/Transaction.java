@@ -4,11 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
-public class Transaction {
+public class Transaction implements Cloneable {
 
     private boolean hasWitness;
     private int inputCounter;
@@ -100,6 +98,10 @@ public class Transaction {
         return hash;
     }
 
+    public void setHash (String hash) {
+        this.hash = hash;
+    }
+
     public String calculateHash() {
         Gson parser = new Gson();
         String toBeHashed = Integer.toString(inputCounter) + Integer.toString(outputCounter)
@@ -147,4 +149,18 @@ public class Transaction {
         this.id = id;
     }
 
+    @Override
+    public Transaction clone()throws CloneNotSupportedException{
+        Transaction cloned = new Transaction();
+        cloned.setId(this.id);
+        cloned.setHasWitness(this.hasWitness);
+        cloned.setHash(this.hash);
+        for (int i = 0; i < inputCounter; i++) {
+            cloned.addInput(input.get(i).clone());
+        }
+        for (int i = 0; i < outputCounter; i++) {
+            cloned.addOutput(output.get(i).clone());
+        }
+        return cloned;
+    }
 }

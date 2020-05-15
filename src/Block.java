@@ -4,7 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Block {
+public class Block implements Cloneable{
 
     private int blockSize = 10;
     private String hash = "";
@@ -158,5 +158,20 @@ public class Block {
             }
         }
         return null;
+    }
+
+    @Override
+    public Block clone()throws CloneNotSupportedException{
+        Block cloned = new Block();
+        cloned.setBlockSize(this.blockSize);
+        cloned.setMerkleTreeRoot(this.merkleTreeRoot);
+        cloned.setTimestamp(this.timestamp);
+        cloned.setPreviousBlockHash(this.previousBlockHash);
+        cloned.setHash(this.hash);
+
+        for (int i = 0; i < transactions.size(); i++) {
+            cloned.addTransaction(transactions.get(i).clone());
+        }
+        return cloned;
     }
 }

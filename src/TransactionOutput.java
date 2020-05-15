@@ -1,4 +1,4 @@
-public class TransactionOutput {
+public class TransactionOutput implements Cloneable{
     private float value;
     private String index = "";
     private String payeePublicKey = "";
@@ -25,5 +25,14 @@ public class TransactionOutput {
 
     public void setPayeePublicKey(String payeePublicKey) {
         this.payeePublicKey = payeePublicKey;
+    }
+
+    @Override
+    public TransactionOutput clone()throws CloneNotSupportedException{
+        TransactionOutput cloned = new TransactionOutput();
+        cloned.setPayeePublicKey(this.payeePublicKey);
+        cloned.setIndex(this.index);
+        cloned.setValue(this.value);
+        return cloned;
     }
 }
