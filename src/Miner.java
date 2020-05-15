@@ -42,8 +42,6 @@ public class Miner extends PeerNode implements IMiner {
         miningThread.start();
     }
 
-    // Broadcast block after it is mined.
-    // update spendings before broadcasting the block
     @Override
     public void broadcastBlock() {
         String toBroadcast = convertBlockToString(toBeMinedBlock);
@@ -68,6 +66,7 @@ public class Miner extends PeerNode implements IMiner {
     	
         updateSpendings(toBeMinedBlock);
         toBeMinedBlock = null;
+        System.out.println(toBeMinedBlock);
     }
 
     @Override
@@ -76,24 +75,23 @@ public class Miner extends PeerNode implements IMiner {
             toBeMinedBlock = new Block();
         }
     	long startTime = System.currentTimeMillis();
-    	List<Transaction> acceptedTransactions = new ArrayList<>();
         int takenTransactions = 0;
         while(((System.currentTimeMillis() - startTime) < 20000)&&(takenTransactions < toBeMinedBlock.getBlockSize())){
             if (incomingTransactions.isEmpty()) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    System.out.println("Main - Block - error sleeping");
+                    System.out.println("Miner - mineBlock - Interrupted");
                 }
                 continue;
             }
-            acceptedTransactions.add(incomingTransactions.remove(0));
-            System.out.println("Adding transaction to block :" + incomingTransactions.size());
+            toBeMinedBlock.addTransaction(incomingTransactions.remove(0));
+            System.out.println("Adding transaction to block - transaction list size : "
+                    + toBeMinedBlock.getTransactions().size());
             takenTransactions++;
         }
         System.out.println("Mining block");
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
-        toBeMinedBlock.setTransactions(acceptedTransactions);
         toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
         toBeMinedBlock.setTimestamp(startTime * 1000);
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
@@ -101,8 +99,7 @@ public class Miner extends PeerNode implements IMiner {
         System.out.println(toBeMinedBlock.hash());
         broadcastBlock();
     }
-    // Listen on ports for when a transactions sent by Clients.
-    // Calls verifyTransaction first then if true adds new transaction
+
     @Override
     public void receiveTransaction() {
         while (!txList.isEmpty()) {
@@ -121,9 +118,6 @@ public class Miner extends PeerNode implements IMiner {
 
     @Override
     public boolean verifyTransaction(Transaction transaction) {
-        // verify sum
-        // verify no double spending
-        // verify signature
         return verifySum(transaction) && !doubleSpendings(transaction) && validSignature(transaction);
     }
 

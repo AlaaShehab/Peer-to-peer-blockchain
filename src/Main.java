@@ -14,7 +14,7 @@ public class Main {
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
-					System.out.println("Main - transaction - error sleeping");
+					System.out.println("Main - transaction - Interrupted");
 				}
 				miner1.receiveTransaction();
 			}
@@ -25,7 +25,7 @@ public class Main {
 				try {
 					Thread.sleep(1);
 				} catch (InterruptedException e) {
-					System.out.println("Main - Block - error sleeping");
+					System.out.println("Main - Block - Interrupted");
 				}
 				miner1.receiveBlock();
 			}
@@ -33,20 +33,22 @@ public class Main {
 
 		miner1.restartMiningThread();
 
+//		miner1.restartMiningThread();
+
 		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
 		
 		//Test client Broadcast
-		client1.readTransaction("txdataset");
+		client1.readTransaction("txdataset.txt");
 		
 		
 		System.out.println("miner1");
 		ArrayList<String> l = miner1.txList;
 	    for(int i=0;i<l.size();i++)
 	    	System.out.println(l.get(i));
-	    System.out.println("miner2");
-	    ArrayList<String> l2 = miner2.txList;
-	    for(int i=0;i<l2.size();i++)
-	    	System.out.println(l2.get(i));
+//	    System.out.println("miner2");
+//	    ArrayList<String> l2 = miner2.txList;
+//	    for(int i=0;i<l2.size();i++)
+//	    	System.out.println(l2.get(i));
 	    
 
 	}
