@@ -7,7 +7,7 @@ public class Miner extends PeerNode implements IMiner {
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
-    private int hardness = 30; // example
+    private int hardness = 5; // example
     private Thread miningThread;
 
     public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
@@ -22,7 +22,7 @@ public class Miner extends PeerNode implements IMiner {
         if (blockList.isEmpty()) {
             return;
         }
-        System.out.println("Receiving block");
+        System.out.println(blockList.get(0));
         Block block = buildBlock(blockList.remove(0));
         if (!block.verifyHash() || !chain.addBlock(block)) {
             return;
