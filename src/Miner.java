@@ -49,8 +49,7 @@ public class Miner extends PeerNode implements IMiner {
         Enumeration<Integer> e = clientsPorts.elements();
     	while (e.hasMoreElements()) { 
     		client1.startConnection("127.0.0.1", e.nextElement());
-    		String msg1 = client1.sendMessage("block"); 
-			msg1 = client1.sendMessage(toBroadcast);            	
+    		String msg1 = client1.sendMessage(toBroadcast);            	
 			client1.stopConnection();
     	}
     	@SuppressWarnings("unchecked")
@@ -59,8 +58,7 @@ public class Miner extends PeerNode implements IMiner {
 		Enumeration<Integer> e2 = clone.elements();
     	while (e2.hasMoreElements()) { 
     		client1.startConnection("127.0.0.1", e2.nextElement());
-    		String msg1 = client1.sendMessage("block"); 
-			msg1 = client1.sendMessage(toBroadcast);            	
+    		String msg1 = client1.sendMessage(toBroadcast);            	
 			client1.stopConnection();
     	}
     	

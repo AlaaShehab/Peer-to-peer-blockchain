@@ -80,7 +80,6 @@ public class Client extends PeerNode implements IClient {
     	Enumeration<Integer> e = minersPorts.elements();
     	while (e.hasMoreElements()) { 
     		client1.startConnection("127.0.0.1", e.nextElement());
-		client1.sendMessage("transaction"); 
 			String msg1 = client1.sendMessage(transaction);            	
 			client1.stopConnection();
     	}

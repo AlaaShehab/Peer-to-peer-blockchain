@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.Gson;
+
 public class serverTCP {
 	private ServerSocket serverSocket;
 	private ClientHandler clientHandler;
@@ -36,12 +38,22 @@ public class serverTCP {
         private BufferedReader in;
         private ArrayList<String> txList;
         private ArrayList<String> blockList;
-        static boolean isTx=false;
  
         public ClientHandler(Socket socket, ArrayList<String> txList,ArrayList<String> blockList) {
             this.clientSocket = socket;
             this.txList=txList;
             this.blockList =blockList;
+        }
+        private boolean isReceivedStringBlock (String received) {
+            Gson parser = new Gson();
+            Block block = parser.fromJson(received, Block.class);
+            return !block.hash().isEmpty();
+        }
+
+        private boolean isReceivedStringTransaction (String received) {
+            Gson parser = new Gson();
+            Transaction transaction = parser.fromJson(received, Transaction.class);
+            return !transaction.getId().isEmpty();
         }
  
         public void run() {
@@ -59,15 +71,11 @@ public class serverTCP {
 				        out.println("bye");
 				        break;
 				    }
-				    if ("transaction".equals(inputLine)) {
-				        isTx=true;
-				    }
-				    if ("block".equals(inputLine)) {
-				        isTx=false;
-				    }
-				    if(isTx) {
+				    if(isReceivedStringTransaction(inputLine)) {
+				    	System.out.println("Rita : add transaction "+inputLine);
 				    	txList.add(inputLine);
-				    }else {
+				    }else if(isReceivedStringBlock(inputLine)){
+				    	System.out.println("Rita : add block "+inputLine);
 				    	blockList.add(inputLine);
 				    }
 				    out.println(inputLine);
