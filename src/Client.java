@@ -93,8 +93,10 @@ public class Client extends PeerNode implements IClient {
         trans.setId(params[0]);
         // set input
         TransactionInput transactionInput = new TransactionInput();
+        String[] pubKey = params[1].split(":");
         String[] prevtx = params[2].split(":");
         String[] opIndex = params[3].split(":");
+        transactionInput.setPayerPublicKey(pubKey[1]);
         transactionInput.setPreviousTransaction(prevtx[1]);
         transactionInput.setOutputIndex(opIndex[1]);
         trans.addInput(transactionInput);
