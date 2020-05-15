@@ -125,7 +125,7 @@ public class Transaction implements Cloneable {
         } catch (RuntimeException e) {
             return null;
         }
-        return output.get(Integer.parseInt(outputIndex));
+        return output.get(Integer.parseInt(outputIndex) - 1);
     }
 
     public List<TransactionInput> getAllTransactionInput () {
