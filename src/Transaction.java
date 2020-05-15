@@ -120,12 +120,12 @@ public class Transaction implements Cloneable {
         if (outputIndex == null) {
             return null;
         }
-        for (TransactionOutput transactionOutput : output) {
-            if (transactionOutput.getIndex().equals(outputIndex)) {
-                return transactionOutput;
-            }
+        try {
+            Integer.parseInt(outputIndex);
+        } catch (RuntimeException e) {
+            return null;
         }
-        return null;
+        return output.get(Integer.parseInt(outputIndex));
     }
 
     public List<TransactionInput> getAllTransactionInput () {

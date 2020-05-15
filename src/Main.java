@@ -38,7 +38,7 @@ public class Main {
 		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
 		
 		//Test client Broadcast
-		client1.readTransaction("txdataset.txt");
+		client1.readTransaction("txdataset");
 		
 		
 		System.out.println("miner1");
