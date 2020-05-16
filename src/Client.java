@@ -106,7 +106,7 @@ public class Client extends PeerNode implements IClient {
             String[] val = params[i].split(":");
             String[] output = params[i + 1].split(":");
             transactionOutput.setIndex(output[1]);
-            transactionOutput.setValue(Float.parseFloat(val[1]));
+            transactionOutput.setValue(Double.parseDouble(val[1]));
             trans.addOutput(transactionOutput);
         }
         return trans;
@@ -127,7 +127,7 @@ public class Client extends PeerNode implements IClient {
         TransactionOutput transactionOutput = new TransactionOutput();
         String[] value = params[2].split(":");
         String[] index = params[3].split(":");
-        transactionOutput.setValue(Float.parseFloat(value[1]));
+        transactionOutput.setValue(Double.parseDouble(value[1]));
         transactionOutput.setIndex(index[1]);
         trans.addOutput(transactionOutput);
         return trans;

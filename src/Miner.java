@@ -7,6 +7,7 @@ public class Miner extends PeerNode implements IMiner {
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
+    private Set<Pair> currentSpendings;
     private int hardness = 5; // example
     private Thread miningThread;
 
@@ -28,6 +29,7 @@ public class Miner extends PeerNode implements IMiner {
             return;
         }
         miningThread.interrupt();
+        //TODO make sure transactions are valid
         updateSpendings(block);
         updateToBeMinedBlockTransaction(block);
         restartMiningThread();
@@ -61,8 +63,6 @@ public class Miner extends PeerNode implements IMiner {
     		String msg1 = client1.sendMessage(toBroadcast);            	
 			client1.stopConnection();
     	}
-    	
-        updateSpendings(toBeMinedBlock);
         toBeMinedBlock = null;
         System.out.println(toBeMinedBlock);
     }
@@ -115,22 +115,26 @@ public class Miner extends PeerNode implements IMiner {
             boolean validTransaction = verifyTransaction(transaction);
             if (validTransaction) {
                 incomingTransactions.add(transaction);
+                addTransactionSpendings(transaction);
                 System.out.println("Adding transaction to list : " + incomingTransactions.size());
+            } else {
+                verifyTransaction(transaction);
+                System.out.println("Invalid Transaction");
             }
         }
     }
 
     @Override
     public boolean verifyTransaction(Transaction transaction) {
-        return verifySum(transaction) && !doubleSpendings(transaction) && validSignature(transaction);
+        return verifySum(transaction) && validSignature(transaction) && !doubleSpendings(transaction);
     }
 
     private boolean verifySum (Transaction transaction) {
         List<TransactionInput> inputs = transaction.getAllTransactionInput();
         List<TransactionOutput> outputs = transaction.getAllTransactionOutput();
 
-        float moneyReceived = 0;
-        float moneySpent = 0;
+        double moneyReceived = 0;
+        double moneySpent = 0;
 
         for (TransactionInput input : inputs) {
             if (initialTransaction(transaction)) {
@@ -193,25 +197,40 @@ public class Miner extends PeerNode implements IMiner {
         return transaction.getAllTransactionInput().size() == 1
                 && transaction.getAllTransactionInput().get(0).getOutputIndex().equals("0");
     }
+    private void addTransactionSpendings (Transaction transaction) {
+        List<TransactionInput> inputs = transaction.getAllTransactionInput();
+        List<TransactionOutput> outputs = transaction.getAllTransactionOutput();
 
+        for (TransactionInput input : inputs) {
+            Pair coin = new Pair(input.getPreviousTransaction(), input.getOutputIndex());
+            if (spendings.contains(coin)) {
+                spendings.remove(coin);
+            }
+        }
+
+        for (int i = 1; i <= outputs.size(); i++) {
+            Pair coin = new Pair(transaction.getId(), String.valueOf(i));
+            spendings.add(coin);
+        }
+    }
     private void updateSpendings (Block block) {
         List<Transaction> transactions = block.getTransactions();
         for (Transaction transaction : transactions) {
-            List<TransactionInput> inputs = transaction.getAllTransactionInput();
-            List<TransactionOutput> outputs = transaction.getAllTransactionOutput();
-
-            for (TransactionInput input : inputs) {
-                Pair coin = new Pair(input.getPreviousTransaction(), input.getOutputIndex());
-                if (spendings.contains(coin)) {
-                    spendings.remove(coin);
-                }
+            if (toBeMinedBlock.containsTransaction(transaction.getId())
+                || alreadyReceivedTransation(transaction.getId())) {
+                continue;
             }
+            addTransactionSpendings(transaction);
+        }
+    }
 
-            for (TransactionOutput output : outputs) {
-                Pair coin = new Pair(transaction.getId(), output.getIndex());
-                spendings.add(coin);
+    private boolean alreadyReceivedTransation (String transactionID) {
+        for (Transaction receivedTransaction : incomingTransactions) {
+            if (receivedTransaction.getId().equals(transactionID)) {
+                return true;
             }
         }
+        return false;
     }
 
     private void updateToBeMinedBlockTransaction (Block newReceivedBlock) {

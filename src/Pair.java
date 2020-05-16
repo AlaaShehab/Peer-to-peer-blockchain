@@ -22,4 +22,14 @@ public class Pair {
     public void setOutputIndex(String outputIndex) {
         this.outputIndex = outputIndex;
     }
+
+    @Override
+    public boolean equals(Object pair) {
+        return this.txID.equals(((Pair) pair).getTxID())
+                && this.outputIndex.equals(((Pair) pair).getOutputIndex());
+    }
+    @Override
+    public int hashCode() {
+        return (txID + outputIndex).hashCode();
+    }
 }
