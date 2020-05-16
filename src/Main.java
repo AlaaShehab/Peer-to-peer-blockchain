@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 public class Main {
@@ -60,13 +62,18 @@ public class Main {
 		miner2.restartMiningThread();
 		
 		//Test client Broadcast
-		client1.readTransaction("txdataset");
+		client1.readTransaction("/home/rita/git/Peer-to-peer-blockchai/src/txdataset");
 		
 		
 		System.out.println("miner1");
-		ArrayList<String> l = miner1.txList;
-	    for(int i=0;i<l.size();i++)
-	    	System.out.println(l.get(i));
+		synchronized(miner1.txList) 
+        { 
+            // must be in synchronized block 
+            Iterator it = miner1.txList.iterator(); 
+  
+            while (it.hasNext()) 
+                System.out.println(it.next()); 
+        } 
 //	    System.out.println("miner2");
 //	    ArrayList<String> l2 = miner2.txList;
 //	    for(int i=0;i<l2.size();i++)
