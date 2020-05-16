@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -9,8 +11,8 @@ public class PeerNode {
 	int ID;
 	clientTCP client1;
 	serverTCP server1;
-	ArrayList<String> txList;
-	ArrayList<String> blockList;
+	List<String> txList;
+	List<String> blockList;
 	//TODO first load it from file, and last save it to the file
 	static String portsFile = "ports.txt";
 	static Hashtable<Integer, Integer> minersPorts;
@@ -22,8 +24,8 @@ public class PeerNode {
 		this.ID = ID;
 		server1 = new serverTCP();
 		client1 = new clientTCP();
-		txList = new ArrayList<String>();
-		blockList = new ArrayList<String>();
+		txList = Collections.synchronizedList(new ArrayList<String>());
+		blockList = Collections.synchronizedList(new ArrayList<String>());
 		if(type.equals("miner")) {
 			if(minersPorts==null) {
 				minersPorts = new Hashtable<Integer, Integer>();
