@@ -1,4 +1,6 @@
 import com.google.gson.Gson;
+
+import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.TimeUnit;
@@ -75,21 +77,32 @@ public class Miner extends PeerNode implements IMiner {
         if (toBeMinedBlock == null) {
             toBeMinedBlock = new Block();
         }
-    	long startTime = System.currentTimeMillis();
+        try {
+            startMining();
+        } catch (InterruptedException e) {
+            System.out.println("Thread " +  Thread.currentThread().getId()
+                    + " - mineBlock - Interrupted");
+            try {
+                TimeUnit.MILLISECONDS.sleep(2);
+            } catch (InterruptedException ex) {
+            }
+        }
+        broadcasting = true;
+        try {
+            chain.addBlock(toBeMinedBlock.clone());
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        broadcastBlock();
+    }
+
+    private void startMining () throws InterruptedException {
+        long startTime = System.currentTimeMillis();
         int takenTransactions = 0;
         while(((System.currentTimeMillis() - startTime) < 20000&& takenTransactions < toBeMinedBlock.getBlockSize())
                 || takenTransactions == 0){
             if (incomingTransactions.isEmpty()) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    System.out.println("Thread " +  Thread.currentThread().getId()
-                            + " - mineBlock - Interrupted");
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(2);
-                    } catch (InterruptedException ex) {
-                    }
-                }
+                TimeUnit.MICROSECONDS.sleep(1);
                 continue;
             }
             toBeMinedBlock.addTransaction(incomingTransactions.remove(0));
@@ -103,13 +116,6 @@ public class Miner extends PeerNode implements IMiner {
         toBeMinedBlock.setTimestamp(startTime * 1000);
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
         toBeMinedBlock.solve(hardness);
-        broadcasting = true;
-        try {
-            chain.addBlock(toBeMinedBlock.clone());
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        broadcastBlock();
     }
 
     @Override
