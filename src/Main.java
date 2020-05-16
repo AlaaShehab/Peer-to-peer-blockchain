@@ -33,9 +33,31 @@ public class Main {
 
 		miner1.restartMiningThread();
 
-//		miner1.restartMiningThread();
-
 		Miner miner2 = new Miner(1026, "127.0.0.1", 3);
+
+		new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					System.out.println("Main - transaction - Interrupted");
+				}
+				miner2.receiveTransaction();
+			}
+		}).start();
+
+		new Thread(() -> {
+			while (true) {
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					System.out.println("Main - Block - Interrupted");
+				}
+				miner2.receiveBlock();
+			}
+		}).start();
+
+		miner2.restartMiningThread();
 		
 		//Test client Broadcast
 		client1.readTransaction("txdataset");

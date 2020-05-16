@@ -72,10 +72,8 @@ public class serverTCP {
 				        break;
 				    }
 				    if(isReceivedStringTransaction(inputLine)) {
-				    	System.out.println("Rita : add transaction "+inputLine);
 				    	txList.add(inputLine);
 				    }else if(isReceivedStringBlock(inputLine)){
-				    	System.out.println("Rita : add block "+inputLine);
 				    	blockList.add(inputLine);
 				    }
 				    out.println(inputLine);

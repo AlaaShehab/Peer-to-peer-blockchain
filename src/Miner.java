@@ -1,15 +1,16 @@
 import com.google.gson.Gson;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.TimeUnit;
 
 public class Miner extends PeerNode implements IMiner {
     private Set<Pair> spendings;
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
-    private Set<Pair> currentSpendings;
     private int hardness = 5; // example
     private Thread miningThread;
+    private boolean broadcasting;
 
     public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
     	super(port, hostName,ID,"miner");
@@ -23,16 +24,16 @@ public class Miner extends PeerNode implements IMiner {
         if (blockList.isEmpty()) {
             return;
         }
-        System.out.println(blockList.get(0));
         Block block = buildBlock(blockList.remove(0));
         if (!block.verifyHash() || !chain.addBlock(block)) {
             return;
         }
+        while (broadcasting);
+        System.out.println("Thread " +  Thread.currentThread().getId() + " : Received valid Block");
+        System.out.println("Stopping thread : " + miningThread.getId());
         miningThread.interrupt();
-        //TODO make sure transactions are valid
         updateSpendings(block);
         updateToBeMinedBlockTransaction(block);
-        restartMiningThread();
     }
 
     public void restartMiningThread() {
@@ -46,6 +47,7 @@ public class Miner extends PeerNode implements IMiner {
 
     @Override
     public void broadcastBlock() {
+        broadcasting = true;
         String toBroadcast = convertBlockToString(toBeMinedBlock);
         //sending block to all clients and miners except me.
         Enumeration<Integer> e = clientsPorts.elements();
@@ -65,6 +67,7 @@ public class Miner extends PeerNode implements IMiner {
     	}
         toBeMinedBlock = null;
         System.out.println(toBeMinedBlock);
+        broadcasting = false;
     }
 
     @Override
@@ -80,22 +83,27 @@ public class Miner extends PeerNode implements IMiner {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    System.out.println("Miner - mineBlock - Interrupted");
+                    System.out.println("Thread " +  Thread.currentThread().getId()
+                            + " - mineBlock - Interrupted");
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(2);
+                    } catch (InterruptedException ex) {
+                    }
                 }
                 continue;
             }
             toBeMinedBlock.addTransaction(incomingTransactions.remove(0));
-            System.out.println("Adding transaction to block - transaction list size : "
+            System.out.println("Thread " +  Thread.currentThread().getId()  + " Adding transaction to Block size : "
                     + toBeMinedBlock.getTransactions().size());
             takenTransactions++;
         }
-        System.out.println("Mining block");
+        System.out.println("Thread " + Thread.currentThread().getId() +" : Mining block");
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
         toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
         toBeMinedBlock.setTimestamp(startTime * 1000);
         toBeMinedBlock.setHash(toBeMinedBlock.calculateBlockHash());
         toBeMinedBlock.solve(hardness);
-        System.out.println(toBeMinedBlock.hash());
+        broadcasting = true;
         try {
             chain.addBlock(toBeMinedBlock.clone());
         } catch (CloneNotSupportedException e) {
@@ -116,7 +124,8 @@ public class Miner extends PeerNode implements IMiner {
             if (validTransaction) {
                 incomingTransactions.add(transaction);
                 addTransactionSpendings(transaction);
-                System.out.println("Adding transaction to list : " + incomingTransactions.size());
+                System.out.println("Thread " +  Thread.currentThread().getId()  + " : Adding transaction to list : "
+                        + incomingTransactions.size());
             } else {
                 verifyTransaction(transaction);
                 System.out.println("Invalid Transaction");
