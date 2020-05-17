@@ -8,7 +8,7 @@ public class Miner extends PeerNode implements IMiner {
     private Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
-    private int hardness = 5; // example
+    private int hardness = 3; // example
     private Thread miningThread;
     private boolean broadcasting;
 
@@ -54,7 +54,8 @@ public class Miner extends PeerNode implements IMiner {
         Enumeration<Integer> e = clientsPorts.elements();
     	while (e.hasMoreElements()) { 
     		client1.startConnection("127.0.0.1", e.nextElement());
-    		String msg1 = client1.sendMessage(toBroadcast);            	
+    		String msg1 = client1.sendMessage(toBroadcast); 
+    		messagesCount++;
 			client1.stopConnection();
     	}
     	@SuppressWarnings("unchecked")
@@ -63,7 +64,8 @@ public class Miner extends PeerNode implements IMiner {
 		Enumeration<Integer> e2 = clone.elements();
     	while (e2.hasMoreElements()) { 
     		client1.startConnection("127.0.0.1", e2.nextElement());
-    		String msg1 = client1.sendMessage(toBroadcast);            	
+    		String msg1 = client1.sendMessage(toBroadcast); 
+    		messagesCount++;
 			client1.stopConnection();
     	}
         toBeMinedBlock = null;
@@ -94,6 +96,9 @@ public class Miner extends PeerNode implements IMiner {
             e.printStackTrace();
         }
         broadcastBlock();
+        System.out.println("Messages exchanged for a block: "+ messagesCount);
+        messagesCountList.add(messagesCount);
+        messagesCount=0;
     }
 
     private void startMining () throws InterruptedException {
@@ -124,6 +129,7 @@ public class Miner extends PeerNode implements IMiner {
                 txList.remove(0);
                 continue;
             }
+            messagesCount++;
             Transaction transaction = buildTransaction(txList.remove(0));
             boolean validTransaction = verifyTransaction(transaction);
             if (validTransaction) {

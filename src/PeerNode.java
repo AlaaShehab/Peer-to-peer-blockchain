@@ -17,11 +17,14 @@ public class PeerNode {
 	static String portsFile = "ports.txt";
 	static Hashtable<Integer, Integer> minersPorts;
 	static Hashtable<Integer, Integer> clientsPorts;
+    static int messagesCount=0;
+    static List<Integer> messagesCountList;
 	
 	public PeerNode(int port,String hostName,int ID,String type) throws InterruptedException, BrokenBarrierException {
 		this.hostName=hostName;
 		this.port =port;
 		this.ID = ID;
+		messagesCountList = new ArrayList<Integer>();
 		server1 = new serverTCP();
 		client1 = new clientTCP();
 		txList = Collections.synchronizedList(new ArrayList<String>());

@@ -7,16 +7,18 @@ import java.util.concurrent.TimeUnit;
 
 public class Block implements Cloneable{
 
-    private int blockSize = 10;
+    private int blockSize = 200;
     private String hash = "";
     private String merkleTreeRoot = "";
     private String previousBlockHash = "";
     private List<Transaction> transactions;
     private long timestamp;
     private int nonce = 0;
+    static ArrayList<Long>miningTimeList;
 
     public Block () {
         transactions = new ArrayList<>();
+        miningTimeList = new ArrayList<Long>();
     }
 
     public String hash() {
@@ -37,11 +39,16 @@ public class Block implements Cloneable{
 	
     //Hardness is the number of zeros in the beginning of the hash
     public void solve(int hardness) {
+    	long start = System.currentTimeMillis();
         String hardString = calculatehardString(hardness);
         do {
             nonce++;
             hash = calculateBlockHash();
         } while (!hash.substring(0, hardness).equals(hardString));
+        long end = System.currentTimeMillis();
+        long elapsedTime = end - start;
+        miningTimeList.add(elapsedTime);
+        System.out.println("Time to mine a block: "+elapsedTime);
     }
 
     @Override
