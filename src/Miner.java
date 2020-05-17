@@ -103,7 +103,7 @@ public class Miner extends PeerNode implements IMiner {
 
     private void startMining () throws InterruptedException {
         long startTime = System.currentTimeMillis();
-        while(((System.currentTimeMillis() - startTime) < 20000
+        while(((System.currentTimeMillis() - startTime) < 900000
                 && toBeMinedBlock.getTransactions().size() < toBeMinedBlock.getBlockSize())
                 || toBeMinedBlock.getTransactions().size() == 0){
             if (incomingTransactions.isEmpty()) {

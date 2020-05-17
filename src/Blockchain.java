@@ -71,4 +71,18 @@ public class Blockchain {
         return max + 1;
     }
 
+    private int getTotalNodes () {
+        if (chain.isEmpty()) {
+            return 0;
+        }
+        int nodes = chain.size();
+        for (Blockchain child : chain) {
+            nodes += child.getTotalNodes();
+        }
+        return nodes;
+    }
+
+    public int numberOfStaleBlocks () {
+        return getTotalNodes() + 1 - depth();
+    }
 }
