@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -14,7 +15,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - transaction - Interrupted");
 				}
@@ -25,7 +26,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - Block - Interrupted");
 				}
@@ -40,7 +41,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - transaction - Interrupted");
 				}
@@ -51,7 +52,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - Block - Interrupted");
 				}
@@ -67,7 +68,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - transaction - Interrupted");
 				}
@@ -78,7 +79,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - Block - Interrupted");
 				}
@@ -94,7 +95,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - transaction - Interrupted");
 				}
@@ -105,7 +106,7 @@ public class Main {
 		new Thread(() -> {
 			while (true) {
 				try {
-					Thread.sleep(1);
+                    TimeUnit.MICROSECONDS.sleep(1);
 				} catch (InterruptedException e) {
 					System.out.println("Main - Block - Interrupted");
 				}
