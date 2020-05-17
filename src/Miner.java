@@ -138,7 +138,6 @@ public class Miner extends PeerNode implements IMiner {
                 System.out.println("Thread " +  Thread.currentThread().getId()  + " : Adding transaction to list : "
                         + incomingTransactions.size());
             } else {
-                verifyTransaction(transaction);
                 System.out.println("Invalid Transaction");
             }
         }
