@@ -1,6 +1,4 @@
 import com.google.gson.Gson;
-
-import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.TimeUnit;
@@ -36,6 +34,7 @@ public class Miner extends PeerNode implements IMiner {
         miningThread.interrupt();
         updateSpendings(block);
         updateToBeMinedBlockTransaction(block);
+        System.out.println("Starting thread : " + miningThread.getId());
     }
 
     public void restartMiningThread() {
@@ -83,7 +82,8 @@ public class Miner extends PeerNode implements IMiner {
             System.out.println("Thread " +  Thread.currentThread().getId()
                     + " - mineBlock - Interrupted");
             try {
-                TimeUnit.MILLISECONDS.sleep(2);
+                TimeUnit.MILLISECONDS.sleep(1);
+                return;
             } catch (InterruptedException ex) {
             }
         }
@@ -98,9 +98,9 @@ public class Miner extends PeerNode implements IMiner {
 
     private void startMining () throws InterruptedException {
         long startTime = System.currentTimeMillis();
-        int takenTransactions = 0;
-        while(((System.currentTimeMillis() - startTime) < 20000&& takenTransactions < toBeMinedBlock.getBlockSize())
-                || takenTransactions == 0){
+        while(((System.currentTimeMillis() - startTime) < 20000
+                && toBeMinedBlock.getTransactions().size() < toBeMinedBlock.getBlockSize())
+                || toBeMinedBlock.getTransactions().size() == 0){
             if (incomingTransactions.isEmpty()) {
                 TimeUnit.MICROSECONDS.sleep(1);
                 continue;
@@ -108,7 +108,6 @@ public class Miner extends PeerNode implements IMiner {
             toBeMinedBlock.addTransaction(incomingTransactions.remove(0));
             System.out.println("Thread " +  Thread.currentThread().getId()  + " Adding transaction to Block size : "
                     + toBeMinedBlock.getTransactions().size());
-            takenTransactions++;
         }
         System.out.println("Thread " + Thread.currentThread().getId() +" : Mining block");
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
