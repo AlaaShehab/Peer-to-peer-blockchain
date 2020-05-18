@@ -55,6 +55,25 @@ public class Blockchain {
         }
         return current;
     }
+	
+	public Blockchain getLeastTimestampChain (int maxDepth) {
+        if (chain.isEmpty()) {
+            return this;
+        }
+
+        Blockchain current = null;
+        for (Blockchain child : chain) {
+            int depth = child.depth();
+            if (depth == maxDepth - 1) {
+                Blockchain blockchain = child.getLeastTimestampChain(maxDepth - 1);
+                current = current == null ? blockchain
+                        : blockchain != null
+                        && current.block.getTimestamp() < blockchain.block.getTimestamp()
+                        ? current : blockchain;
+            }
+        }
+        return current;
+    }
 
     private int depth() {
         if (chain.isEmpty()) {
