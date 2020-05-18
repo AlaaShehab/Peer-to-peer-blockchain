@@ -8,7 +8,7 @@ public class Miner extends PeerNode implements IMiner {
     Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
-    private int hardness = 3; // example
+    private int hardness = 5; // example
     private Thread miningThread;
     private boolean broadcasting;
 

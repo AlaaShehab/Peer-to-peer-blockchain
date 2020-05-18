@@ -120,7 +120,7 @@ public class Main {
 		
 		//Test client Broadcast
 		client1.readTransaction("/home/rita/git/Peer-to-peer-blockchai/src/txdataset");
-		
+		TimeUnit.SECONDS.sleep(2);
 		System.out.println("messages");
 		List<Integer> l = miner1.messagesCountList;
 		int sum=0;
