@@ -11,12 +11,48 @@ public class Miner extends PeerNode implements IMiner {
     private int hardness = 5; // example
     private Thread miningThread;
     private boolean broadcasting;
+    private Log bftLog= new Log();
 
-    public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
+    /**
+	 * @return the bftLog
+	 */
+	public Log getBftLog() {
+		return bftLog;
+	}
+	public Miner(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
     	super(port, hostName,ID,"miner");
         chain = new Blockchain(GensisBlock.getGensisBlock());
         spendings = new HashSet<>();
         incomingTransactions = new ArrayList<>();
+    }
+    @Override
+    public void receiveBFTBlock(){
+    	if (blockList.isEmpty()) {
+            return;
+        }
+        Block block = buildBlock(blockList.remove(0));
+        if (!block.verifyHash() || !chain.addBlock(block)) {
+            return;
+        }
+        if(block.getState()==Utils.states.preprapare){
+        	block.setState(Utils.states.prepare);
+        	bftLog.addPrepareRequest(block);
+        	broadcastBlock(block);
+        	
+        	
+        }else if(block.getState()==Utils.states.prepare){
+        	bftLog.addPrepareRequest(block);
+        	Runnable r = (Runnable) new MyRunnable(block,this,0);
+        	new Thread(r).start();
+        	//wait on count =2f
+
+        }else if(block.getState()==Utils.states.commit){
+        	bftLog.addCommitRequest(block);
+        	Runnable r = (Runnable) new MyRunnable(block,this,1);
+        	new Thread(r).start();
+        	//wait on count =2f+1
+
+        }
     }
 
     @Override
@@ -47,9 +83,9 @@ public class Miner extends PeerNode implements IMiner {
     }
 
     @Override
-    public void broadcastBlock() {
+    public void broadcastBlock(Block b) {
         broadcasting = true;
-        String toBroadcast = convertBlockToString(toBeMinedBlock);
+        String toBroadcast = convertBlockToString(b);
         //sending block to all clients and miners except me.
         Enumeration<Integer> e = clientsPorts.elements();
     	while (e.hasMoreElements()) { 
@@ -95,7 +131,7 @@ public class Miner extends PeerNode implements IMiner {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        broadcastBlock();
+        broadcastBlock(toBeMinedBlock);
         System.out.println("Messages exchanged for a block: "+ messagesCount);
         messagesCountList.add(messagesCount);
         messagesCount=0;
@@ -297,3 +333,4 @@ public class Miner extends PeerNode implements IMiner {
         return !transaction.getId().isEmpty();
     }
 }
+

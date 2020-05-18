@@ -1,4 +1,7 @@
+
 public class Utils {
+    public static enum states  {preprapare , prepare , commit};
+
     public static String toHexString (byte[] hash) {
         StringBuilder hexString = new StringBuilder();
         for (int i = 0; i < hash.length; i++) {

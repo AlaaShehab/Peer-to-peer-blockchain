@@ -13,6 +13,7 @@ public class Block implements Cloneable{
     private List<Transaction> transactions;
     private long timestamp;
     private int nonce = 0;
+    private Utils.states state =Utils.states.preprapare;
     static ArrayList<Long> miningTimeList;
 
     public Block () {
@@ -132,6 +133,9 @@ public class Block implements Cloneable{
     public void setHash (String hash) {
         this.hash = hash;
     }
+    public String getHash() {
+        return hash;
+    }
 
     public int getBlockSize() {
         return blockSize;
@@ -140,6 +144,12 @@ public class Block implements Cloneable{
     public void setBlockSize(int blockSize) {
         this.blockSize = blockSize;
     }
+    public void setState(Utils.states state) {
+        this.state = state;
+    }
+    public Utils.states getState() {
+        return state;
+    } 
 
     public boolean containsTransaction (String transactionID) {
         for (Transaction transaction : transactions) {
@@ -176,6 +186,7 @@ public class Block implements Cloneable{
         cloned.setTimestamp(this.timestamp);
         cloned.setPreviousBlockHash(this.previousBlockHash);
         cloned.setHash(this.hash);
+        cloned.setState(this.state);
 
         for (int i = 0; i < transactions.size(); i++) {
             cloned.addTransaction(transactions.get(i).clone());
