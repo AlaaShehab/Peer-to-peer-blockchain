@@ -138,7 +138,6 @@ public class Miner extends PeerNode implements IMiner {
                 System.out.println("Thread " +  Thread.currentThread().getId()  + " : Adding transaction to list : "
                         + incomingTransactions.size());
             } else {
-                verifyTransaction(transaction);
                 System.out.println("Invalid Transaction");
             }
         }
@@ -210,9 +209,20 @@ public class Miner extends PeerNode implements IMiner {
     private Transaction getTransaction (String TransactionID) {
         Blockchain currentChain = chain.getTransactionBlock(TransactionID);
         Block previousTransBlock = currentChain == null ? toBeMinedBlock : currentChain.block;
-        return previousTransBlock == null ? null : previousTransBlock.getTransaction(TransactionID);
+        Transaction transaction = previousTransBlock.containsTransaction(TransactionID)
+                                    ? previousTransBlock.getTransaction(TransactionID)
+                                    : getTransactionFromIncoming(TransactionID);
+        return transaction;
     }
 
+    private Transaction getTransactionFromIncoming (String transactionID) {
+        for (Transaction transaction : incomingTransactions) {
+            if (transaction.getId().equals(transactionID)) {
+                return transaction;
+            }
+        }
+        return null;
+    }
     private boolean initialTransaction (Transaction transaction) {
         return transaction.getAllTransactionInput().size() == 1
                 && transaction.getAllTransactionInput().get(0).getOutputIndex().equals("0");
