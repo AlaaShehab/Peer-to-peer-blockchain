@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.TimeUnit;
@@ -119,6 +120,30 @@ public class Main {
 		
 		//Test client Broadcast
 		client1.readTransaction("/home/rita/git/Peer-to-peer-blockchai/src/txdataset");
+		
+		System.out.println("messages");
+		List<Integer> l = miner1.messagesCountList;
+		int sum=0;
+		for(int i=0;i<l.size();i++) {
+	    	System.out.print(l.get(i)/7+" ");
+	    	sum+=(l.get(i)/7);
+		}
+		System.out.println();
+		System.out.println("average = "+sum/l.size());
+		System.out.println("stale blocks");
+		System.out.println(miner1.chain.numberOfStaleBlocks ());
+		sum=0;
+		System.out.println("times");
+		ArrayList<Long> m =miner1.chain.block.miningTimeList;
+		for(int i=0;i<m.size();i++) {
+	    	System.out.print(m.get(i)+" ");
+	    	sum+=(m.get(i));
+		}
+		System.out.println();
+		System.out.println("average = "+sum/m.size());
+		
+		
+		
 		
 		
 //		System.out.println("miner1");

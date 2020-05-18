@@ -18,7 +18,7 @@ public class PeerNode {
 	static Hashtable<Integer, Integer> minersPorts;
 	static Hashtable<Integer, Integer> clientsPorts;
     static int messagesCount=0;
-    static List<Integer> messagesCountList;
+    static public List<Integer> messagesCountList;
 	
 	public PeerNode(int port,String hostName,int ID,String type) throws InterruptedException, BrokenBarrierException {
 		this.hostName=hostName;

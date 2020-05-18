@@ -3,7 +3,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Block implements Cloneable{
 
@@ -14,11 +13,12 @@ public class Block implements Cloneable{
     private List<Transaction> transactions;
     private long timestamp;
     private int nonce = 0;
-    static ArrayList<Long>miningTimeList;
+    static ArrayList<Long> miningTimeList;
 
     public Block () {
         transactions = new ArrayList<>();
-        miningTimeList = new ArrayList<Long>();
+        if(miningTimeList==null)
+        	miningTimeList = new ArrayList<Long>();
     }
 
     public String hash() {

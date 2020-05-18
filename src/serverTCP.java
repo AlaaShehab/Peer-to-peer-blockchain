@@ -66,7 +66,6 @@ public class serverTCP {
 	             
 	            String inputLine;            
 				while ((inputLine = in.readLine()) != null) {
-					TimeUnit.SECONDS.sleep(1);
 					//TODO remove it or state instruction for the end
 				    if (".".equals(inputLine)) {
 				        out.println("bye");
@@ -81,8 +80,6 @@ public class serverTCP {
 				    
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
         	 try {

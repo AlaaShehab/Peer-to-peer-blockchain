@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Miner extends PeerNode implements IMiner {
     private Set<Pair> spendings;
-    private Blockchain chain;
+    Blockchain chain;
     private Block toBeMinedBlock;
     private List<Transaction> incomingTransactions;
     private int hardness = 3; // example
@@ -103,7 +103,7 @@ public class Miner extends PeerNode implements IMiner {
 
     private void startMining () throws InterruptedException {
         long startTime = System.currentTimeMillis();
-        while(((System.currentTimeMillis() - startTime) < 900000
+        while(((System.currentTimeMillis() - startTime) < 300000
                 && toBeMinedBlock.getTransactions().size() < toBeMinedBlock.getBlockSize())
                 || toBeMinedBlock.getTransactions().size() == 0){
             if (incomingTransactions.isEmpty()) {
