@@ -151,6 +151,7 @@ public class Miner extends PeerNode implements IMiner {
                     + toBeMinedBlock.getTransactions().size());
         }
         System.out.println("Thread " + Thread.currentThread().getId() +" : Mining block");
+        //toBeMinedBlock.setPreviousBlockHash(chain.getLeastTimestampChain(chain.depth()).block.hash());
         toBeMinedBlock.setPreviousBlockHash(chain.getChainHead().block.hash());
         toBeMinedBlock.setMerkleTreeRoot(toBeMinedBlock.calculateMerkleTreeRoot());
         toBeMinedBlock.setTimestamp(startTime * 1000);

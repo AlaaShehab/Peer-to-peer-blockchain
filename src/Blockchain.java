@@ -75,7 +75,7 @@ public class Blockchain {
         return current;
     }
 
-    private int depth() {
+    public int depth() {
         if (chain.isEmpty()) {
             return 1;
         }
