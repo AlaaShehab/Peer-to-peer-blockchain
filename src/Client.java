@@ -14,10 +14,12 @@ import java.util.concurrent.BrokenBarrierException;
 
 public class Client extends PeerNode implements IClient {
     Map<String, KeyPair> keys;
+    Blockchain chain;
     
     public Client(int port,String hostName,int ID) throws InterruptedException, BrokenBarrierException {
     	super(port, hostName, ID,"client");
         keys = new HashMap<>();
+        chain = new Blockchain(GensisBlock.getGensisBlock());
     }
 
     @Override
@@ -132,4 +134,19 @@ public class Client extends PeerNode implements IClient {
         trans.addOutput(transactionOutput);
         return trans;
     }
+    public void receiveBlock() {
+        if (blockList.isEmpty()) {
+            return;
+        }
+        Block block = buildBlock(blockList.remove(0));
+        if (!block.verifyHash() || !chain.addBlock(block)) {
+            return;
+        }
+    }
+
+    public Block buildBlock (String block) {
+        Gson parser = new Gson();
+        return parser.fromJson(block, Block.class);
+    }
+
 }
